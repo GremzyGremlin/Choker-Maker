@@ -1,412 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Choker Customizer</title>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-    }
+  function getCheckedValues(containerId) {
+    return Array.from(document.querySelectorAll(`#${containerId} input:checked`)).map(el => el.value);
+  }
 
-    .scroll-wrapper {
-      width: 600px;
-      height: 900px;
-      margin: 0 auto;
-      overflow-y: auto;
-      padding: 20px;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+  function updatePreview() {
+    const leather = document.getElementById("leather").value;
+    const spikeColors = getCheckedValues("spikeColorsChecklist");
+    const chainStyle = document.getElementById("chainStyle").value;
+    const chainColorMode = document.getElementById("chainColorMode").value;
+    const chainColors = getCheckedValues("chainColorsChecklist");
+    const pendant = document.getElementById("pendant").value;
 
-    label {
-      display: block;
-      margin: 10px 0 5px;
-    }
+    // Update leather preview
+    const leatherBar = document.getElementById("leatherBar");
+    leatherBar.style.backgroundColor = colorMap[leather];
 
-    .checklist {
-      width: 300px;
-      height: 100px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      background: #fafafa;
-      margin-bottom: 10px;
-    }
-
-    .checklist label {
-      display: block;
-    }
-
-    #preview {
-      margin-top: 30px;
-      padding: 20px;
-      border: 2px dashed #aaa;
-      background: #bdbdbd;
-    }
-
-    .bar {
-      width: 300px;
-      height: 30px;
-      position: relative;
-      margin: 10px auto;
-      border: 2px solid black;
-    }
-
-    #leatherBar {
-      width: 100%;
-      height: 100%;
-    }
-
-    .spike-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: space-evenly;
-      align-items: center;
-      z-index: 2;
-    }
-
-    .spike {
-      width: 6px;
-      height: 6px;
-    }
-
-    .chain-preview {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 2px;
-      margin: 10px 0;
-    }
-
-    .chain-symbol {
-      display: inline-block;
-      border-radius: 50%;
-    }
-
-    .chunky {
-      width: 20px;
-      height: 20px;
-    }
-
-    .small {
-      width: 10px;
-      height: 10px;
-    }
-
-    .chain-gap {
-      width: 60px;
-      height: 1px;
-    }
-
-    .pendant-preview {
-      font-size: 72px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 20px;
-    }
-
-    #saveImageBtn {
-      display: block;
-      margin: 20px auto 0;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #responses {
-      margin-top: 2rem;
-    }
-
-    #responsesList {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .entry {
-      border: 1px solid #ccc;
-      padding: 1rem;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-    }
-
-    .entry button {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #333;
-      color: white;
-      cursor: pointer;
-    }
-
-    .entry button:hover {
-      background-color: #555;
-    }
-  </style>
-</head>
-<body>
-  <div class="scroll-wrapper">
-    <h1>Design Your Choker</h1>
-
-    <label for="leather">Leather Color</label>
-    <select id="leather"></select>
-
-    <label>Spike Colors</label>
-    <div id="spikeColorsChecklist" class="checklist"></div>
-
-    <label for="chainStyle">Chain Style</label>
-    <select id="chainStyle">
-      <option value="none">None</option>
-      <option value="small">Small</option>
-      <option value="chunky">Chunky</option>
-    </select>
-
-    <label for="chainColorMode">Chain Color Mode</label>
-    <select id="chainColorMode">
-      <option value="alternating">Alternating</option>
-      <option value="split">Split in Half</option>
-    </select>
-
-    <label>Chain Colors</label>
-    <div id="chainColorsChecklist" class="checklist"></div>
-
-    <label for="pendant">Pendant Color</label>
-    <select id="pendant"></select>
-
-    <div id="preview">
-      <h2>Preview</h2>
-      <div id="leatherPreview" class="bar">
-        <div id="leatherBar"></div>
-        <div id="spikeOverlay" class="spike-overlay"></div>
-      </div>
-      <div id="chainPreview" class="chain-preview"></div>
-      <div id="pendantPreview" class="pendant-preview"></div>
-    </div>
-
-    <button id="saveImageBtn">Save as Image</button>
-  </div>
-
-  <div id="responses">
-    <h2>Recent Custom Orders</h2>
-    <div id="responsesList"></div>
-  </div>
-
-  <script>
-    const colorMap = {
-      "Black": "black",
-      "Black with White Stitching": "black",
-      "Blue": "blue",
-      "Pink": "pink",
-      "Purple": "purple",
-      "Red": "red",
-      "Sky Blue": "skyblue",
-      "White": "white",
-      "Gold": "#FFD700",
-      "Green": "green",
-      "Gunmetal": "#2a3439",
-      "Hot Pink": "#ff69b4",
-      "Light Pink": "#ffb6c1",
-      "Orange": "orange",
-      "Yellow": "yellow",
-      "Brown": "#8B4513",
-      "Teal": "teal",
-      "Solid Green": "#228B22",
-      "Solid Hot Pink": "#ff69b4",
-      "Solid Pink": "#FFB6C1",
-      "Solid Purple": "#9370DB",
-      "Solid Teal": "#008080",
-      "None": "#bdbdbd",
-      "Translucent Green": "rgba(0, 255, 0, 0.5)",
-      "Translucent Lavender": "rgba(230, 230, 250, 0.5)",
-      "Translucent Orange": "rgba(255, 165, 0, 0.5)",
-      "Translucent Pink": "rgba(255, 192, 203, 0.5)",
-      "Translucent Salmon": "rgba(250, 128, 114, 0.5)",
-      "Translucent Sky Blue": "rgba(135, 206, 235, 0.5)",
-      "Translucent Teal": "rgba(0, 128, 128, 0.5)",
-      "Translucent Yellow": "rgba(255, 255, 0, 0.5)"
-    };
-
-    const leatherColors = ["Black", "Black with White Stitching", "Blue", "Pink", "Purple", "Red", "Sky Blue", "White"];
-    const spikeColors = ["Black", "Blue", "Gold", "Green", "Gunmetal", "Hot Pink", "Light Pink", "Orange", "Purple", "Red", "Sky Blue", "White", "Yellow"];
-    const chunkyChainColors = ["Black", "Blue", "Brown", "Green", "Orange", "Pink", "Purple", "Red", "Sky Blue", "Teal", "White"];
-    const smallChainColors = ["Orange", "Solid Green", "Solid Hot Pink", "Solid Pink", "Solid Purple", "Solid Teal", "Translucent Green", "Translucent Lavender", "Translucent Orange", "Translucent Pink", "Translucent Salmon", "Translucent Sky Blue", "Translucent Teal", "Translucent Yellow", "White"];
-    const starPendants = ["None", "Blue", "Green", "Orange", "Pink", "Purple", "White"];
-
-    function populateChecklist(containerId, options) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = "";
-      options.forEach(color => {
-        const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" value="${color}"> ${color}`;
-        container.appendChild(label);
-      });
-    }
-
-    function populateSelect(selectId, options) {
-      const select = document.getElementById(selectId);
-      select.innerHTML = "";
-      options.forEach(color => {
-        const opt = document.createElement("option");
-        opt.value = color;
-        opt.textContent = color;
-        select.appendChild(opt);
-      });
-    }
-
-    function getCheckedValues(containerId) {
-      return Array.from(document.querySelectorAll(`#${containerId} input:checked`)).map(el => el.value);
-    }
-
-    function getOutlineColor(baseColorName) {
-      return (baseColorName === "Black" || baseColorName === "Gunmetal") ? "white" : "black";
-    }
-
-    function getColor(colorName) {
-      return colorMap[colorName] || colorName.toLowerCase();
-    }
-
-    function getSymmetricColors(baseColors, total) {
-      const mid = Math.floor(total / 2);
-      const output = [];
-      for (let i = 0; i < mid; i++) {
-        output.unshift(baseColors[i % baseColors.length]);
-        output.push(baseColors[i % baseColors.length]);
-      }
-      if (total % 2 !== 0) {
-        output.splice(mid, 0, baseColors[mid % baseColors.length]);
-      }
-      return output;
-    }
-
-    function updatePreview() {
-      const leatherColor = document.getElementById("leather").value;
-      const leatherBar = document.getElementById("leatherBar");
-      leatherBar.style.background = getColor(leatherColor);
-      leatherBar.style.border = `2px solid ${getOutlineColor(leatherColor)}`;
-
-      const spikeColorsChecked = getCheckedValues("spikeColorsChecklist");
-      const spikeOverlay = document.getElementById("spikeOverlay");
-      spikeOverlay.innerHTML = "";
-      if (spikeColorsChecked.length) {
-        const symmetric = getSymmetricColors(spikeColorsChecked, 11);
-        symmetric.forEach(colorName => {
-          const div = document.createElement("div");
-          div.className = "spike";
-          div.style.background = getColor(colorName);
-          div.style.border = `1px solid ${getOutlineColor(colorName)}`;
-          spikeOverlay.appendChild(div);
-        });
-      }
-
-      const chainStyle = document.getElementById("chainStyle").value;
-      const chainColorMode = document.getElementById("chainColorMode").value;
-      const chainColorsChecked = getCheckedValues("chainColorsChecklist");
-      const chainPreview = document.getElementById("chainPreview");
-      chainPreview.innerHTML = "";
-
-      if (chainStyle !== "none") {
-        const totalLinks = 15;
-        const chainColors = chainColorMode === "split" ? chainColorsChecked.slice(0, totalLinks / 2) : chainColorsChecked;
-        const symmetricColors = chainColorMode === "split" ? getSymmetricColors(chainColors, totalLinks) : chainColors;
-
-        symmetricColors.forEach(color => {
-          const link = document.createElement("div");
-          link.className = "chain-symbol";
-          link.style.background = getColor(color);
-          link.style.border = `2px solid ${getOutlineColor(color)}`;
-          if (chainStyle === "chunky") {
-            link.classList.add("chunky");
-          } else {
-            link.classList.add("small");
-          }
-          chainPreview.appendChild(link);
-        });
-      }
-
-      const pendantColor = document.getElementById("pendant").value;
-      const pendantPreview = document.getElementById("pendantPreview");
-      pendantPreview.textContent = pendantColor !== "None" ? "★" : "";
-      pendantPreview.style.color = getColor(pendantColor);
-    }
-
-    document.getElementById("leather").addEventListener("change", updatePreview);
-    document.getElementById("spikeColorsChecklist").addEventListener("change", updatePreview);
-    document.getElementById("chainStyle").addEventListener("change", updatePreview);
-    document.getElementById("chainColorMode").addEventListener("change", updatePreview);
-    document.getElementById("chainColorsChecklist").addEventListener("change", updatePreview);
-    document.getElementById("pendant").addEventListener("change", updatePreview);
-
-    // Populate options
-    populateSelect("leather", leatherColors);
-    populateChecklist("spikeColorsChecklist", spikeColors);
-    populateSelect("chainStyle", ["none", "small", "chunky"]);
-    populateSelect("chainColorMode", ["alternating", "split"]);
-    populateChecklist("chainColorsChecklist", chainStyle === "chunky" ? chunkyChainColors : smallChainColors);
-    populateSelect("pendant", starPendants);
-
-    // Update preview on load
-    updatePreview();
-
-    // Save image functionality
-    document.getElementById("saveImageBtn").addEventListener("click", () => {
-      html2canvas(document.getElementById("preview")).then(canvas => {
-        const dataUrl = canvas.toDataURL();
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = "choker_preview.png";
-        link.click();
-      });
+    // Update spikes preview
+    const spikeOverlay = document.getElementById("spikeOverlay");
+    spikeOverlay.innerHTML = "";
+    spikeColors.forEach(() => {
+      const spike = document.createElement('div');
+      spike.className = 'spike';
+      spike.style.backgroundColor = "#000";  // Spike color can be customized if needed
+      spikeOverlay.appendChild(spike);
     });
 
-    // Handle form responses
-    function saveResponse() {
-      const leather = document.getElementById("leather").value;
-      const spikes = getCheckedValues("spikeColorsChecklist").join(", ");
-      const chainStyle = document.getElementById("chainStyle").value;
-      const chainColorMode = document.getElementById("chainColorMode").value;
-      const chainColors = getCheckedValues("chainColorsChecklist").join(", ");
-      const pendant = document.getElementById("pendant").value;
+    // Update chain preview
+    const chainPreview = document.getElementById("chainPreview");
+    chainPreview.innerHTML = "";
+    const chainColor = chainColorMode === 'alternating' ? chainColors : chainColors.slice(0, chainColors.length / 2);
+    chainColor.forEach(color => {
+      const chainSymbol = document.createElement('div');
+      chainSymbol.className = 'chain-symbol';
+      chainSymbol.style.backgroundColor = colorMap[color];
+      chainPreview.appendChild(chainSymbol);
+    });
 
-      const responseDiv = document.createElement('div');
-      responseDiv.className = 'entry';
-      responseDiv.innerHTML = `
-        <strong>Leather Color:</strong> ${leather} <br>
-        <strong>Spike Colors:</strong> ${spikes} <br>
-        <strong>Chain Style:</strong> ${chainStyle} <br>
-        <strong>Chain Color Mode:</strong> ${chainColorMode} <br>
-        <strong>Chain Colors:</strong> ${chainColors} <br>
-        <strong>Pendant:</strong> ${pendant} <br>
-        <button onclick="loadResponse(${leather}, ${spikes}, ${chainStyle}, ${chainColorMode}, ${chainColors}, ${pendant})">Load</button>
+    // Update pendant preview
+    const pendantPreview = document.getElementById("pendantPreview");
+    pendantPreview.innerHTML = colorMap[pendant] || "None";
+    pendantPreview.style.color = colorMap[pendant] || "transparent";
+  }
+
+  // Save order
+  function saveOrder() {
+    const leather = document.getElementById("leather").value;
+    const spikeColors = getCheckedValues("spikeColorsChecklist");
+    const chainStyle = document.getElementById("chainStyle").value;
+    const chainColorMode = document.getElementById("chainColorMode").value;
+    const chainColors = getCheckedValues("chainColorsChecklist");
+    const pendant = document.getElementById("pendant").value;
+
+    const order = {
+      leather,
+      spikeColors,
+      chainStyle,
+      chainColorMode,
+      chainColors,
+      pendant
+    };
+
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    orders.push(order);
+    localStorage.setItem("orders", JSON.stringify(orders));
+    displaySavedOrders();
+  }
+
+  // Display saved orders
+  function displaySavedOrders() {
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    const responsesList = document.getElementById("responsesList");
+    responsesList.innerHTML = "<h3>Previous Custom Orders</h3>";
+    orders.forEach(order => {
+      const entry = document.createElement("div");
+      entry.classList.add("entry");
+      entry.innerHTML = `
+        <p><strong>Leather:</strong> ${order.leather}</p>
+        <p><strong>Spikes:</strong> ${order.spikeColors.join(", ")}</p>
+        <p><strong>Chain Style:</strong> ${order.chainStyle}</p>
+        <p><strong>Chain Color Mode:</strong> ${order.chainColorMode}</p>
+        <p><strong>Chain Colors:</strong> ${order.chainColors.join(", ")}</p>
+        <p><strong>Pendant:</strong> ${order.pendant}</p>
       `;
+      responsesList.appendChild(entry);
+    });
+  }
 
-      document.getElementById("responsesList").appendChild(responseDiv);
-    }
+  // Save image
+  function saveImage() {
+    html2canvas(document.getElementById("preview")).then(function(canvas) {
+      const link = document.createElement("a");
+      link.download = "choker-customization.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
 
-    function loadResponse(leather, spikes, chainStyle, chainColorMode, chainColors, pendant) {
-      document.getElementById("leather").value = leather;
-      document.getElementById("spikeColorsChecklist").value = spikes;
-      document.getElementById("chainStyle").value = chainStyle;
-      document.getElementById("chainColorMode").value = chainColorMode;
-      document.getElementById("chainColorsChecklist").value = chainColors;
-      document.getElementById("pendant").value = pendant;
-      updatePreview();
-    }
+  // Initialize the form with default data
+  window.onload = function() {
+    populateSelect("leather", leatherColors);
+    populateSelect("pendant", starPendants);
+    populateChecklist("spikeColorsChecklist", spikeColors);
+    populateChecklist("chainColorsChecklist", chunkyChainColors);
 
-    // Save and load form responses
-    saveResponse();
+    // Load saved responses
+    displaySavedOrders();
 
-  </script>
+    // Update preview based on current form values
+    updatePreview();
+
+    // Add event listeners for form changes
+    document.querySelectorAll("select, input[type='checkbox']").forEach(el => {
+      el.addEventListener("change", updatePreview);
+    });
+
+    // Event listener for save image button
+    document.getElementById("saveImageBtn").addEventListener("click", saveImage);
+
+    // Event listener for save order
+    document.getElementById("saveImageBtn").addEventListener("click", saveOrder);
+  };
+</script>
 </body>
 </html>
-
