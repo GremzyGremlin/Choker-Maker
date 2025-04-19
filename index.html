@@ -1,48 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Choker Customizer</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
-    /* Same CSS from before */
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+
+    .scroll-wrapper {
+      width: 600px;
+      height: 900px;
+      margin: 0 auto;
+      overflow-y: auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    .checklist {
+      width: 300px;
+      height: 100px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: #fafafa;
+      margin-bottom: 10px;
+    }
+
+    .checklist label {
+      display: block;
+    }
+
+    #preview {
+      margin-top: 30px;
+      padding: 20px;
+      border: 2px dashed #aaa;
+      background: #bdbdbd;
+    }
+
+    .bar {
+      width: 300px;
+      height: 30px;
+      position: relative;
+      margin: 10px auto;
+      border: 2px solid black;
+    }
+
+    #leatherBar {
+      width: 100%;
+      height: 100%;
+    }
+
+    .spike-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .spike {
+      width: 6px;
+      height: 6px;
+    }
+
+    .chain-preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2px;
+      margin: 10px 0;
+    }
+
+    .chain-symbol {
+      display: inline-block;
+      border-radius: 50%;
+    }
+
+    .chunky {
+      width: 20px;
+      height: 20px;
+    }
+
+    .small {
+      width: 10px;
+      height: 10px;
+    }
+
+    .chain-gap {
+      width: 60px;
+      height: 1px;
+    }
+
+    .pendant-preview {
+      font-size: 72px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 20px;
+    }
+
+    #saveImageBtn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 <div class="scroll-wrapper">
   <h1>Design Your Choker</h1>
 
-  <label for="orderSelect">Select an Order</label>
-  <select id="orderSelect">
-    <option disabled selected>Choose...</option>
-  </select>
-  <button id="loadOrderBtn">Load Order</button>
+  <label for="leather">Leather Color</label>
+  <select id="leather"></select>
 
-  <label for="chokerSize">Choker Size</label>
-  <select id="chokerSize">
-    <option disabled selected>Select Size</option>
-    <option value="M">M (fits 14-16 inches)</option>
-    <option value="L">L (fits 16-18 inches)</option>
-    <option value="S">S (fits 12-14 inches)</option>
-  </select>
-
-  <label for="baseColor">Base Color</label>
-  <select id="baseColor"></select>
-
-  <label>Spike Styles</label>
-  <div id="spikeStylesChecklist" class="checklist"></div>
+  <label>Spike Colors</label>
+  <div id="spikeColorsChecklist" class="checklist"></div>
 
   <label for="chainStyle">Chain Style</label>
   <select id="chainStyle">
-    <option value="small">Small Chains</option>
-    <option value="chunky">Chunky Chains</option>
+    <option value="none">None</option>
+    <option value="small">Small</option>
+    <option value="chunky">Chunky</option>
+  </select>
+
+  <label for="chainColorMode">Chain Color Mode</label>
+  <select id="chainColorMode">
+    <option value="alternating">Alternating</option>
+    <option value="split">Split in Half</option>
   </select>
 
   <label>Chain Colors</label>
   <div id="chainColorsChecklist" class="checklist"></div>
 
-  <label for="pendantStyle">Pendant Style</label>
-  <select id="pendantStyle"></select>
+  <label for="pendant">Pendant Color</label>
+  <select id="pendant"></select>
 
   <div id="preview">
     <h2>Preview</h2>
@@ -58,126 +167,189 @@
 </div>
 
 <script>
-const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQo19bcAXga14MPSLFNxZFoBR7tifg8hYclvGQoqFCv-Sx3ZmYlOYqYuPY1epc9OClxNyO-U90oT7DW/pub?output=csv';
+  const colorMap = {
+    "Black": "black",
+    "Black with White Stitching": "black",
+    "Blue": "blue",
+    "Pink": "pink",
+    "Purple": "purple",
+    "Red": "red",
+    "Sky Blue": "skyblue",
+    "White": "white",
+    "Gold": "#FFD700",
+    "Green": "green",
+    "Gunmetal": "#2a3439",
+    "Hot Pink": "#ff69b4",
+    "Light Pink": "#ffb6c1",
+    "Orange": "orange",
+    "Yellow": "yellow",
+    "Brown": "#8B4513",
+    "Teal": "teal",
+    "Solid Green": "#228B22",
+    "Solid Hot Pink": "#ff69b4",
+    "Solid Pink": "#FFB6C1",
+    "Solid Purple": "#9370DB",
+    "Solid Teal": "#008080",
+	"None": "#bdbdbd",
+    "Translucent Green": "rgba(0, 255, 0, 0.5)",
+    "Translucent Lavender": "rgba(230, 230, 250, 0.5)",
+    "Translucent Orange": "rgba(255, 165, 0, 0.5)",
+    "Translucent Pink": "rgba(255, 192, 203, 0.5)",
+    "Translucent Salmon": "rgba(250, 128, 114, 0.5)",
+    "Translucent Sky Blue": "rgba(135, 206, 235, 0.5)",
+    "Translucent Teal": "rgba(0, 128, 128, 0.5)",
+    "Translucent Yellow": "rgba(255, 255, 0, 0.5)"
+  };
 
-const baseColorSelect = document.getElementById("baseColor");
-const spikeStylesChecklist = document.getElementById("spikeStylesChecklist");
-const chainColorsChecklist = document.getElementById("chainColorsChecklist");
-const pendantSelect = document.getElementById("pendantStyle");
-const orderSelect = document.getElementById("orderSelect");
+  const leatherColors = ["Black", "Black with White Stitching", "Blue", "Pink", "Purple", "Red", "Sky Blue", "White"];
+  const spikeColors = ["Black", "Blue", "Gold", "Green", "Gunmetal", "Hot Pink", "Light Pink", "Orange", "Purple", "Red", "Sky Blue", "White", "Yellow"];
+  const chunkyChainColors = ["Black", "Blue", "Brown", "Green", "Orange", "Pink", "Purple", "Red", "Sky Blue", "Teal", "White"];
+  const smallChainColors = ["Orange", "Solid Green", "Solid Hot Pink", "Solid Pink", "Solid Purple", "Solid Teal", "Translucent Green", "Translucent Lavender", "Translucent Orange", "Translucent Pink", "Translucent Salmon", "Translucent Sky Blue", "Translucent Teal", "Translucent Yellow", "White"];
+  const starPendants = ["None", "Blue", "Green", "Orange", "Pink", "Purple", "White"];
 
-const colors = ["black", "white", "silver", "gold", "pink", "red", "orange", "yellow", "green", "blue", "purple"];
+  function populateChecklist(containerId, options) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    options.forEach(color => {
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="checkbox" value="${color}"> ${color}`;
+      container.appendChild(label);
+    });
+  }
 
-function populateSelect(select, options) {
-  select.innerHTML = options.map(color => `<option value="${color}">${color}</option>`).join("");
-}
-
-function populateChecklist(container, options) {
-  container.innerHTML = options.map(color =>
-    `<label><input type="checkbox" value="${color}"> ${color}</label>`
-  ).join("");
-}
-
-function getCheckedValues(containerId) {
-  return Array.from(document.querySelectorAll(`#${containerId} input:checked`)).map(el => el.value);
-}
-
-function setCheckedValues(containerId, values) {
-  const checkboxes = document.querySelectorAll(`#${containerId} input[type='checkbox']`);
-  checkboxes.forEach(box => box.checked = values.includes(box.value));
-}
-
-function populateFormFromData(data) {
-  document.getElementById("chokerSize").value = data.chokerSize;
-  document.getElementById("baseColor").value = data.baseColor;
-  setCheckedValues("spikeStylesChecklist", data.spikes);
-  document.getElementById("chainStyle").value = data.chainStyle;
-  setCheckedValues("chainColorsChecklist", data.chainColors);
-  document.getElementById("pendantStyle").value = data.pendant;
-  updatePreview();
-}
-
-fetch(sheetUrl)
-  .then(res => res.text())
-  .then(csv => {
-    const [header, ...rows] = csv.trim().split("\n").map(r => r.split(","));
-    window.orderData = rows.map((r, i) => ({
-      name: `Order ${i + 1}`,
-      chokerSize: r[2],
-      baseColor: r[3],
-      spikes: r[5] ? r[5].split(";") : [],
-      chainStyle: r[6],
-      chainColors: r[9] ? r[9].split(";") : [],
-      pendant: r[11]
-    }));
-
-    orderData.forEach((order, idx) => {
+  function populateSelect(selectId, options) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = "";
+    options.forEach(color => {
       const opt = document.createElement("option");
-      opt.value = idx;
-      opt.textContent = order.name;
-      orderSelect.appendChild(opt);
+      opt.value = color;
+      opt.textContent = color;
+      select.appendChild(opt);
+    });
+  }
+
+  function getCheckedValues(containerId) {
+    return Array.from(document.querySelectorAll(`#${containerId} input:checked`)).map(el => el.value);
+  }
+
+  function getOutlineColor(baseColorName) {
+    return (baseColorName === "Black" || baseColorName === "Gunmetal") ? "white" : "black";
+  }
+
+  function getColor(colorName) {
+    return colorMap[colorName] || colorName.toLowerCase();
+  }
+
+  function getSymmetricColors(baseColors, total) {
+    const mid = Math.floor(total / 2);
+    const output = [];
+    for (let i = 0; i < mid; i++) {
+      output.unshift(baseColors[i % baseColors.length]);
+      output.push(baseColors[i % baseColors.length]);
+    }
+    if (total % 2 !== 0) {
+      output.splice(mid, 0, baseColors[mid % baseColors.length]);
+    }
+    return output;
+  }
+
+  function updatePreview() {
+    const leatherColor = document.getElementById("leather").value;
+    const leatherBar = document.getElementById("leatherBar");
+    leatherBar.style.background = getColor(leatherColor);
+    leatherBar.style.border = `2px solid ${getOutlineColor(leatherColor)}`;
+
+    const spikeColorsChecked = getCheckedValues("spikeColorsChecklist");
+    const spikeOverlay = document.getElementById("spikeOverlay");
+    spikeOverlay.innerHTML = "";
+    if (spikeColorsChecked.length) {
+      const symmetric = getSymmetricColors(spikeColorsChecked, 11);
+      symmetric.forEach(colorName => {
+        const div = document.createElement("div");
+        div.className = "spike";
+        div.style.background = getColor(colorName);
+        div.style.border = `1px solid ${getOutlineColor(colorName)}`;
+        spikeOverlay.appendChild(div);
+      });
+    }
+
+    const chainStyle = document.getElementById("chainStyle").value;
+    const chainMode = document.getElementById("chainColorMode").value;
+    const chainColors = getCheckedValues("chainColorsChecklist");
+    const chainPreview = document.getElementById("chainPreview");
+    chainPreview.innerHTML = "";
+
+    if (chainStyle !== "none" && chainColors.length > 0) {
+      const count = chainStyle === "chunky" ? 8 : 15;
+      const splitPoint = chainStyle === "chunky" ? 4 : 9;
+      const sizeClass = chainStyle;
+
+      const makeChain = (reverse = false) => {
+        for (let i = 0; i < count; i++) {
+          const el = document.createElement("span");
+          el.className = `chain-symbol ${sizeClass}`;
+          let colorName;
+          if (chainMode === "split") {
+            const index = reverse ? i : count - 1 - i;
+            colorName = index < splitPoint ? chainColors[0] : chainColors[1 % chainColors.length];
+          } else {
+            const list = reverse ? [...chainColors].reverse() : chainColors;
+            colorName = list[i % list.length];
+          }
+          el.style.background = getColor(colorName);
+          el.style.border = `1px solid ${getOutlineColor(colorName)}`;
+          chainPreview.appendChild(el);
+        }
+      };
+
+      makeChain(false);
+      const gap = document.createElement("div");
+      gap.className = "chain-gap";
+      chainPreview.appendChild(gap);
+      makeChain(true);
+    }
+
+    const pendantColor = document.getElementById("pendant").value;
+    const pendantPreview = document.getElementById("pendantPreview");
+    pendantPreview.style.color = getColor(pendantColor);
+    pendantPreview.textContent = "★";
+  }
+
+  document.getElementById("chainStyle").addEventListener("change", () => {
+    const style = document.getElementById("chainStyle").value;
+    if (style === "chunky") {
+      populateChecklist("chainColorsChecklist", chunkyChainColors);
+    } else if (style === "small") {
+      populateChecklist("chainColorsChecklist", smallChainColors);
+    } else {
+      document.getElementById("chainColorsChecklist").innerHTML = "";
+    }
+    updatePreview();
+  });
+
+  document.getElementById("saveImageBtn").addEventListener("click", () => {
+    const previewElement = document.getElementById("preview");
+    html2canvas(previewElement, { backgroundColor: null }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "choker-preview.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
     });
   });
 
-document.getElementById("loadOrderBtn").addEventListener("click", () => {
-  const idx = orderSelect.value;
-  if (idx !== "") {
-    populateFormFromData(window.orderData[idx]);
-  }
-});
+  document.addEventListener("DOMContentLoaded", () => {
+    populateSelect("leather", leatherColors);
+    populateChecklist("spikeColorsChecklist", spikeColors);
+    populateSelect("pendant", starPendants);
+    document.getElementById("chainStyle").dispatchEvent(new Event("change"));
 
-populateSelect(baseColorSelect, colors);
-populateChecklist(spikeStylesChecklist, colors);
-populateChecklist(chainColorsChecklist, colors);
-populateSelect(pendantSelect, colors);
+    document.querySelectorAll("select").forEach(sel => sel.addEventListener("change", updatePreview));
+    document.addEventListener("change", e => {
+      if (e.target.tagName === "INPUT" && e.target.type === "checkbox") updatePreview();
+    });
 
-function updatePreview() {
-  const baseColor = document.getElementById("baseColor").value;
-  const spikes = getCheckedValues("spikeStylesChecklist");
-  const chainStyle = document.getElementById("chainStyle").value;
-  const chainColors = getCheckedValues("chainColorsChecklist");
-  const pendant = document.getElementById("pendantStyle").value;
-
-  document.getElementById("leatherBar").style.background = baseColor;
-
-  const spikeOverlay = document.getElementById("spikeOverlay");
-  spikeOverlay.innerHTML = "";
-  spikes.forEach(color => {
-    const s = document.createElement("div");
-    s.className = "spike";
-    s.style.background = color;
-    spikeOverlay.appendChild(s);
+    updatePreview();
   });
-
-  const chainPreview = document.getElementById("chainPreview");
-  chainPreview.innerHTML = "";
-  if (chainStyle !== "none") {
-    const total = 20;
-    for (let i = 0; i < total; i++) {
-      const color = chainColors[i % chainColors.length];
-      const elem = document.createElement("div");
-      elem.className = "chain-symbol";
-      elem.style.background = color;
-      chainPreview.appendChild(elem);
-    }
-  }
-
-  document.getElementById("pendantPreview").textContent = "\u2731";
-  document.getElementById("pendantPreview").style.color = pendant;
-}
-
-document.querySelectorAll("select, input").forEach(el => {
-  el.addEventListener("change", updatePreview);
-});
-
-document.getElementById("saveImageBtn").addEventListener("click", () => {
-  html2canvas(document.getElementById("preview")).then(canvas => {
-    const link = document.createElement('a');
-    link.download = 'choker-preview.png';
-    link.href = canvas.toDataURL();
-    link.click();
-  });
-});
 </script>
 </body>
 </html>
