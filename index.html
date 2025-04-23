@@ -8,8 +8,8 @@
   :root {
     /* Updated colors based on your detailed specification and spreadsheet */
     /* Base Colors (Leather) */
-    --black: #000000;
-    --bw-stitch-black: #000000;
+    --black: #111111;
+    --bw-stitch-black: #0e0e0e;
     --white-leather: #f3f3f2; /* off-white for light mode, slightly gray */
     --blue-leather: #236cd1;
     --sky-blue-leather: #a5d5f6;
@@ -17,21 +17,21 @@
     --pink-leather: #f1777f;
     --purple-leather: #804baf;
 
-    /* Spikes */
-    --white-spikes: #f3f3f3;
-    --black-spikes: #000000;
-    --gold-spikes: #f7cca3;
-    --green-spikes: #8ea343;
-    --gunmetal-spikes: #464a42;
-    --hot-pink-spikes: #ff66aa;
-    --light-pink-spikes: #f9bbc9;
-    --orange-spikes: #cc7b39;
-    --yellow-spikes: #f3e763;
-    --brown-spikes: #8a6f49;
-    --teal-spikes: #008e7d;
-    --pink-spikes: #eb62b9;
-    --purple-spikes: #8829b8;
+    /* Spikes (in rainbow order) */
     --red-spikes: #dc1c12;
+    --orange-spikes: #db7c2e;
+    --yellow-spikes: #f3e763;
+    --gold-spikes: #ffef63;
+    --green-spikes: #6ac933;
+    --sky-blue-spikes: #64c4d6;
+    --blue-spikes: #236cd1;
+    --purple-spikes: #8829b8;
+    --hot-pink-spikes: #ff66aa;
+    --light-pink-spikes: #ffa2b8;
+    --pink-spikes: #eb62b9;
+    --white-spikes: #f3f3f3;
+    --gunmetal-spikes: #464a42;
+    --black-spikes: #000000;
     
     /* Glow in the Dark Star */
     --blue-glow-in-the-dark-star: #64C4D6;
@@ -48,29 +48,29 @@
     --solid-green: #7BD35D;
     --solid-hot-pink: #D03C6C;
     --solid-pink: #CF8499;
-    --solid-purple: #B07BAD;
-    --solid-teal: #8ECBBC;
-    --translucent-green: #D1CA3;
-    --translucent-lavender: #BBA7AB;
+    --solid-purple: #a263af;
+    --solid-teal: #7be4d6;
+    --translucent-green: hsl(83, 65%, 65%);
+    --translucent-lavender: #b699e6;
     --translucent-orange: #ECB88A;
-    --translucent-pink: #CD7D84;
-    --translucent-salmon: #D39385;
-    --translucent-sky-blue: #CED2C6;
-    --translucent-teal: #CED2C6;
+    --translucent-pink: #e6a2c7;
+    --translucent-salmon: #e68787;
+    --translucent-sky-blue: hsl(174, 91%, 69%);
+    --translucent-teal: hsl(157, 59%, 65%);
     --translucent-yellow: #D7D07B;
     --white-small-chain: #F7F3EA;
 
     /* Chunky Chains with full colors */
-    --black-chunky: #170D0A;
+    --black-chunky: #1b1a19;
     --blue-chunky: #253271;
     --brown-chunky: #774429;
-    --green-chunky: #86CA4D;
-    --orange-chunky: #E89342;
+    --green-chunky: hsl(115, 52%, 49%);
+    --orange-chunky: #ff830f;
     --pink-chunky: #E79394;
-    --purple-chunky: #C3A2D3;
+    --purple-chunky: hsl(280, 51%, 61%);
     --red-chunky: #D22A25;
     --sky-blue-chunky: #48C3E9;
-    --teal-chunky: #8DCD8C;
+    --teal-chunky: hsl(155, 53%, 63%);
     --white-chunky: #E1DDCC;
 
 
@@ -109,10 +109,16 @@
     color: #333;
   }
 
+  .container-wrapper {
+    position: relative;
+    max-width: 800px;
+    width: 100%;
+  }
+
   #modeToggle {
-    position: fixed;
-    top: 10px;
-    left: 10px;
+    position: absolute;
+    top: 1rem;
+    left: -4rem;
     font-size: 1.8rem;
     background: none;
     border: none;
@@ -120,29 +126,34 @@
     cursor: pointer;
     user-select: none;
     z-index: 9999;
-  }
-
-  #modeToggle:focus-visible {
-    outline-offset: 2px;
-    outline: 2px solid #2196f3;
-    border-radius: 4px;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .container {
     max-width: 800px;
     width: 100%;
-    max-height: 55vh; /* reduced vertical height for more preview room */
+    max-height: 55vh;
     overflow-y: auto;
     background-color: var(--container-bg-dark);
     border-radius: 12px;
-    padding: 2rem 2.5rem 1.5rem 2.5rem;
+    padding: 1rem 2.5rem 1.5rem 2.5rem;
     box-sizing: border-box;
     border: 2px solid var(--container-border-dark);
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: background-color 0.3s, border-color 0.3s;
-    margin-bottom: 1rem;
+    margin-top: 1.75rem;
+  }
+  
+  #modeToggle:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid #2196f3;
+    border-radius: 4px;
   }
 
   body.light .container {
@@ -161,7 +172,7 @@
     max-height: 40vh;
     background-color: var(--container-bg-dark);
     border-radius: 12px;
-    padding: 0.75rem 2rem 1.75rem 2rem;
+    padding: 1rem 2rem 2.75rem 2rem;
     border: 2px solid var(--container-border-dark);
     box-sizing: border-box;
     user-select: none;
@@ -192,7 +203,7 @@
   }
 
   select, button {
-    font-size: 1rem;
+    font-size: 0.75rem;
     margin-top: 0.25rem;
     padding: 0.25rem 0.5rem;
     width: 100%;
@@ -320,7 +331,7 @@
     position: relative;
     width: 100%;
     max-width: 700px;
-    height: 75px;
+    height: 50px;
     margin-bottom: 1.75rem;
     padding-left: 10%;
     padding-right: 10%;
@@ -337,15 +348,14 @@
     width: 100%;
     height: 100%;
     border-radius: 0;
-    border: 2px solid transparent;
     box-sizing: border-box;
     position: relative;
     transition: background-color 0.3s, border-color 0.3s;
+    border-radius: 4px;
   }
 
   #leatherBar.black-white-stitch {
     background-color: var(--bw-stitch-black);
-    border-color: #444;
   }
 
   body.light #leatherBar.black-white-stitch {
@@ -359,16 +369,16 @@
     height: 0;
     left: 2px;
     right: 2px;
-    border-top: 3px dashed white;
+    border-top: 2px dashed white;
     pointer-events: none;
   }
 
   #leatherBar.black-white-stitch::before {
-    top: 3px;
+    top: 2px;
   }
 
   #leatherBar.black-white-stitch::after {
-    bottom: 3px;
+    bottom: 2px;
   }
 
   #leatherBar:not(.black-white-stitch)::before,
@@ -378,16 +388,16 @@
     height: 0;
     left: 2px;
     right: 2px;
-    border-top: 3px dashed rgba(0,0,0,0.25);
+    border-top: 2px dashed rgba(0,0,0,0.25);
     pointer-events: none;
   }
 
   #leatherBar:not(.black-white-stitch)::before {
-    top: 3px;
+    top: 2px;
   }
 
   #leatherBar:not(.black-white-stitch)::after {
-    bottom: 3px;
+    bottom: 2px;
   }
 
   #spikeOverlay {
@@ -404,10 +414,10 @@
   }
 
   .spike {
-    width: 14px;
-    height: 14px;
+    width: 7px;
+    height: 7px;
     border-radius: 0;
-    outline: 2px solid rgba(100,100,100,0.8);
+    outline: 2px solid rgba(48, 48, 48, 0.8);
     box-sizing: border-box;
   }
 
@@ -450,13 +460,13 @@
   .pendant-ring {
     box-sizing: border-box;
     border-style: solid;
-    border-width: 0.3rem;
-    border-radius: 50%;
+    border-width: 0.4rem;
+    border-radius: 100%;
     margin: auto;
   }
 
   .pendant-star {
-    font-size: 3rem;
+    font-size: 4.25rem;
     user-select: none;
     font-weight: 900;
     color: #fff;
@@ -510,134 +520,295 @@
     clip: rect(0,0,0,0) !important;
     border: 0 !important;
   }
+
+  .export-container {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    max-width: 300px;
+    margin: 1.75rem auto 1rem;
+  }
+
+  #exportBtn {
+    border-radius: 6px 0 0 6px;
+    margin: 0;
+    width: 85%;
+  }
+
+  #exportFormatBtn {
+    width: 15%;
+    margin: 0;
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+    padding: 0;
+  }
+
+  .format-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--container-bg-dark);
+    border: 1px solid var(--container-border-dark);
+    border-radius: 4px;
+    z-index: 1000;
+    width: auto;
+    min-width: 100px;
+  }
+
+  body.light .format-dropdown {
+    background-color: var(--container-bg-light);
+    border-color: var(--container-border-light);
+  }
+
+  .format-dropdown.show {
+    display: block;
+  }
+
+  .format-dropdown button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 0;
+  }
+
+  .format-dropdown button:hover {
+    background-color: rgba(33, 150, 243, 0.1);
+  }
+
+  select:focus,
+  select:focus-visible {
+    outline: none;
+    border-color: #2196f3;
+    background-color: var(--select-focus-bg, #222);
+  }
+
+  .saved-designs-container {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 1rem auto;
+    text-align: center;
+    
+  }
+
+  .saved-designs-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .saved-designs-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  #savedDesignSelector {
+    flex: 1;
+    margin: 0;
+    max-width: none;
+  }
+
+  .export-container {
+    flex: 0 0 auto;
+    display: inline-flex;
+    min-width: 140px;
+    margin: 0;
+  }
+
+  #importInput {
+    display: none;
+  }
+
+  .mobile-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #333;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    z-index: 9999;
+    text-align: center;
+    max-width: 90%;
+    width: 300px;
+  }
+
+  body.light .mobile-popup {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+
+  .mobile-popup button {
+    margin-top: 1rem;
+    width: auto;
+    min-width: 80px;
+  }
 </style>
 </head>
 <body>
-<button id="modeToggle" aria-label="Toggle light/dark mode" title="Toggle Light & Dark Mode">🌙</button>
-<div class="container" role="main" aria-live="polite" aria-atomic="true">
-  <section class="options-container" aria-label="Choker customization options">
-    <h1>Choker Customizer</h1>
+<div class="container-wrapper">
+  <button id="modeToggle" aria-label="Toggle light/dark mode" title="Toggle Light & Dark Mode">🌙</button>
+  <div class="container" role="main" aria-live="polite" aria-atomic="true">
+    <section class="options-container" aria-label="Choker customization options">
+      <h1>Choker Customizer</h1>
 
-    <label for="orderSelector">Select Previous Order by Timestamp</label>
-    <select id="orderSelector" aria-label="Select Previous Order" aria-live="polite" aria-atomic="true" aria-controls="preview" aria-describedby="orderHelp" autocomplete="off">
-      <option value="">Loading orders…</option>
+      <label for="orderSelector">Select Previous Order by Timestamp</label>
+      <select id="orderSelector" aria-label="Select Previous Order" aria-live="polite" aria-atomic="true" aria-controls="preview" aria-describedby="orderHelp" autocomplete="off">
+        <option value="">Loading orders…</option>
+      </select>
+      <div id="orderHelp" class="sr-only" aria-live="polite"></div>
+
+      <label for="chokerSize">Choker Size *</label>
+      <select id="chokerSize" aria-required="true" aria-label="Choker Size" required autocomplete="off">
+        <option value="" disabled selected>-- Select Size --</option>
+        <option>XS (fits 10-12 inches)</option>
+        <option>S (fits 12-14 inches)</option>
+        <option>M (fits 14-16 inches)</option>
+        <option>L (fits 16-18 inches)</option>
+        <option>XL (fits 18-20 inches)</option>
+        <option>Other</option>
+      </select>
+
+      <label for="baseColor">Base Color *</label>
+      <select id="baseColor" aria-required="true" aria-label="Base Color" required autocomplete="off">
+        <option value="" disabled selected>-- Select Base Color --</option>
+        <option>Black</option>
+        <option>Black with White Stitching</option>
+        <option>White</option>
+        <option>Blue</option>
+        <option>Sky Blue</option>
+        <option>Red</option>
+        <option>Pink</option>
+        <option>Purple</option>
+      </select>
+
+      <label for="spikeStyle">Spike Style *</label>
+      <select id="spikeStyle" aria-required="true" aria-label="Spike Style" required autocomplete="off">
+        <option value="" disabled selected>-- Select Spike Style --</option>
+        <option>Unselected</option>
+        <option>No Spikes</option>
+        <option>Solid Color</option>
+        <option>Alternating Color</option>
+        <option>3 Color Reverse</option>
+        <option>Full Color Reverse</option>
+        <option>Other</option>
+      </select>
+
+      <label id="labelSpikeColors" for="spikeColorsChecklist" style="display:none; margin-top:1rem;">Spike Colors</label>
+      <div id="spikeColorsChecklist" class="checkbox-group" aria-labelledby="labelSpikeColors" style="display:none;"></div>
+
+      <label for="chainStyle" style="margin-top:1rem;">Chain Style *</label>
+      <select id="chainStyle" aria-required="true" aria-label="Chain Style" required autocomplete="off">
+        <option value="" disabled selected>-- Select Chain Style --</option>
+        <option>Not Applicable / No Chains</option>
+        <option>Small Chains</option>
+        <option>Chunky Chains</option>
+      </select>
+
+      <label for="smallChainColorPattern" style="margin-top:1rem;display:none;" id="labelSmallChainColorPattern">Small Chain Color Pattern</label>
+      <select id="smallChainColorPattern" aria-label="Small Chain Color Pattern" aria-labelledby="labelSmallChainColorPattern" style="display:none; max-width: 300px;" autocomplete="off">
+        <option value="" disabled selected>-- Select Small Chain Color Pattern --</option>
+        <option>Unselected</option>
+        <option>Solid Color</option>
+        <option>Half and Half</option>
+        <option>2 Color Alternating</option>
+        <option>3 Color Alternating</option>
+        <option>5 Color Alternating</option>
+        <option>Other</option>
+      </select>
+      <label id="labelSmallChainColors" for="smallChainColorsChecklist" style="margin-top:0.5rem;display:none;">Small Chain Colors</label>
+      <div id="smallChainColorsChecklist" class="checkbox-group" aria-labelledby="labelSmallChainColors" style="display:none;"></div>
+
+      <label for="chunkyChainColorPattern" style="margin-top:1rem;display:none;" id="labelChunkyChainColorPattern">Chunky Chain Color Pattern</label>
+      <select id="chunkyChainColorPattern" aria-label="Chunky Chain Color Pattern" aria-labelledby="labelChunkyChainColorPattern" style="display:none; max-width: 300px;" autocomplete="off">
+        <option value="" disabled selected>-- Select Chunky Chain Color Pattern --</option>
+        <option>Unselected</option>
+        <option>Solid Color</option>
+        <option>Half and Half</option>
+        <option>2 Color Alternating</option>
+        <option>4 Color Reverse</option>
+        <option>Other</option>
+      </select>
+      <label id="labelChunkyChainColors" for="chunkyChainColorsChecklist" style="margin-top:0.5rem;display:none;">Chunky Chain Colors</label>
+      <div id="chunkyChainColorsChecklist" class="checkbox-group" aria-labelledby="labelChunkyChainColors" style="display:none;"></div>
+
+      <label for="pendantStyle" style="margin-top:1rem;">Pendant Style</label>
+      <select id="pendantStyle" aria-label="Pendant Style" autocomplete="off">
+        <option value="" disabled selected>-- Select Pendant Style --</option>
+        <option>None</option>
+        <option>O-Ring</option>
+        <option>Glow in the Dark Star</option>
+        <option>Other</option>
+      </select>
+
+      <label for="oRingColor" id="labelORingColor" style="display:none; margin-top:1rem;">O-Ring Color</label>
+      <select id="oRingColor" aria-labelledby="labelORingColor" style="display:none;" autocomplete="off">
+        <option value="" disabled selected>-- Select O-Ring Color --</option>
+        <option>Light</option>
+        <option>Dark</option>
+      </select>
+
+      <label for="oRingSize" id="labelORingSize" style="display:none; margin-top:0.5rem;">O-Ring Size</label>
+      <select id="oRingSize" aria-labelledby="labelORingSize" style="display:none;" autocomplete="off">
+        <option value="" disabled selected>-- Select O-Ring Size --</option>
+        <option>0.75in</option>
+        <option>1.00in</option>
+        <option>1.25in</option>
+        <option>1.50in</option>
+        <option>1.75in</option>
+      </select>
+
+      <label for="glowStarColor" id="labelGlowStarColor" style="display:none; margin-top:1rem;">Glow in the Dark Star Color</label>
+      <select id="glowStarColor" aria-labelledby="labelGlowStarColor" style="display:none;" autocomplete="off">
+        <option value="" disabled selected>-- Select Glow in the Dark Star Color --</option>
+        <option>Blue</option>
+        <option>Green</option>
+        <option>Orange</option>
+        <option>Peach</option>
+        <option>Pink</option>
+        <option>Purple</option>
+        <option>White</option>
+      </select>
+
+      <div style="height: 1rem"></div>
+    </section>
+  </div>
+</div>
+
+<div class="saved-designs-container">
+  <div class="saved-designs-header">
+    <p>Saved Designs</p>
+    <div class="saved-designs-actions">
+      <button id="saveDesign">Save Current</button>
+      <input type="file" id="importInput" accept=".json">
+      <button id="importDesign" onclick="document.getElementById('importInput').click()">Import</button>
+      <button id="exportDesign">Export</button>
+      <button id="deleteDesign" class="delete-button" disabled>Delete</button>
+    </div>
+  </div>
+  <div class="saved-designs-controls">
+    <select id="savedDesignSelector">
+      <option value="">-- Select Saved Design --</option>
     </select>
-    <div id="orderHelp" class="sr-only" aria-live="polite"></div>
-
-    <label for="chokerSize">Choker Size *</label>
-    <select id="chokerSize" aria-required="true" aria-label="Choker Size" required autocomplete="off">
-      <option value="" disabled selected>-- Select Size --</option>
-      <option>XS (fits 10-12 inches)</option>
-      <option>S (fits 12-14 inches)</option>
-      <option>M (fits 14-16 inches)</option>
-      <option>L (fits 16-18 inches)</option>
-      <option>XL (fits 18-20 inches)</option>
-      <option>Other</option>
-    </select>
-
-    <label for="baseColor">Base Color *</label>
-    <select id="baseColor" aria-required="true" aria-label="Base Color" required autocomplete="off">
-      <option value="" disabled selected>-- Select Base Color --</option>
-      <option>Black</option>
-      <option>Black with White Stitching</option>
-      <option>White</option>
-      <option>Blue</option>
-      <option>Sky Blue</option>
-      <option>Red</option>
-      <option>Pink</option>
-      <option>Purple</option>
-    </select>
-
-    <label for="spikeStyle">Spike Style *</label>
-    <select id="spikeStyle" aria-required="true" aria-label="Spike Style" required autocomplete="off">
-      <option value="" disabled selected>-- Select Spike Style --</option>
-      <option>Unselected</option>
-      <option>No Spikes</option>
-      <option>Solid Color</option>
-      <option>Alternating Color</option>
-      <option>3 Color Reverse</option>
-      <option>Full Color Reverse</option>
-      <option>Other</option>
-    </select>
-
-    <label id="labelSpikeColors" for="spikeColorsChecklist" style="display:none; margin-top:1rem;">Spike Colors</label>
-    <div id="spikeColorsChecklist" class="checkbox-group" aria-labelledby="labelSpikeColors" style="display:none;"></div>
-
-    <label for="chainStyle" style="margin-top:1rem;">Chain Style *</label>
-    <select id="chainStyle" aria-required="true" aria-label="Chain Style" required autocomplete="off">
-      <option value="" disabled selected>-- Select Chain Style --</option>
-      <option>Not Applicable / No Chains</option>
-      <option>Small Chains</option>
-      <option>Chunky Chains</option>
-    </select>
-
-    <label for="smallChainColorPattern" style="margin-top:1rem;display:none;" id="labelSmallChainColorPattern">Small Chain Color Pattern</label>
-    <select id="smallChainColorPattern" aria-label="Small Chain Color Pattern" aria-labelledby="labelSmallChainColorPattern" style="display:none; max-width: 300px;" autocomplete="off">
-      <option value="" disabled selected>-- Select Small Chain Color Pattern --</option>
-      <option>Unselected</option>
-      <option>Solid Color</option>
-      <option>Half and Half</option>
-      <option>2 Color Alternating</option>
-      <option>3 Color Alternating</option>
-      <option>5 Color Alternating</option>
-      <option>Other</option>
-    </select>
-    <label id="labelSmallChainColors" for="smallChainColorsChecklist" style="margin-top:0.5rem;display:none;">Small Chain Colors</label>
-    <div id="smallChainColorsChecklist" class="checkbox-group" aria-labelledby="labelSmallChainColors" style="display:none;"></div>
-
-    <label for="chunkyChainColorPattern" style="margin-top:1rem;display:none;" id="labelChunkyChainColorPattern">Chunky Chain Color Pattern</label>
-    <select id="chunkyChainColorPattern" aria-label="Chunky Chain Color Pattern" aria-labelledby="labelChunkyChainColorPattern" style="display:none; max-width: 300px;" autocomplete="off">
-      <option value="" disabled selected>-- Select Chunky Chain Color Pattern --</option>
-      <option>Unselected</option>
-      <option>Solid Color</option>
-      <option>Half and Half</option>
-      <option>2 Color Alternating</option>
-      <option>4 Color Reverse</option>
-      <option>Other</option>
-    </select>
-    <label id="labelChunkyChainColors" for="chunkyChainColorsChecklist" style="margin-top:0.5rem;display:none;">Chunky Chain Colors</label>
-    <div id="chunkyChainColorsChecklist" class="checkbox-group" aria-labelledby="labelChunkyChainColors" style="display:none;"></div>
-
-    <label for="pendantStyle" style="margin-top:1rem;">Pendant Style</label>
-    <select id="pendantStyle" aria-label="Pendant Style" autocomplete="off">
-      <option value="" disabled selected>-- Select Pendant Style --</option>
-      <option>None</option>
-      <option>O-Ring</option>
-      <option>Glow in the Dark Star</option>
-      <option>Other</option>
-    </select>
-
-    <label for="oRingColor" id="labelORingColor" style="display:none; margin-top:1rem;">O-Ring Color</label>
-    <select id="oRingColor" aria-labelledby="labelORingColor" style="display:none;" autocomplete="off">
-      <option value="" disabled selected>-- Select O-Ring Color --</option>
-      <option>Light</option>
-      <option>Dark</option>
-    </select>
-
-    <label for="oRingSize" id="labelORingSize" style="display:none; margin-top:0.5rem;">O-Ring Size</label>
-    <select id="oRingSize" aria-labelledby="labelORingSize" style="display:none;" autocomplete="off">
-      <option value="" disabled selected>-- Select O-Ring Size --</option>
-      <option>XS</option>
-      <option>S</option>
-      <option>M</option>
-      <option>L</option>
-      <option>XL</option>
-    </select>
-
-    <label for="glowStarColor" id="labelGlowStarColor" style="display:none; margin-top:1rem;">Glow in the Dark Star Color</label>
-    <select id="glowStarColor" aria-labelledby="labelGlowStarColor" style="display:none;" autocomplete="off">
-      <option value="" disabled selected>-- Select Glow in the Dark Star Color --</option>
-      <option>Blue</option>
-      <option>Green</option>
-      <option>Orange</option>
-      <option>Peach</option>
-      <option>Pink</option>
-      <option>Purple</option>
-      <option>White</option>
-    </select>
-
-    <button id="exportBtn" style="margin:1.75rem auto 1rem; font-weight: 700; font-size: 1.1rem; padding: 8px 16px;" disabled>Export Preview as PNG</button>
-  </section>
+    <div class="export-container">
+      <button id="exportBtn" disabled>Export as PNG</button>
+      <button id="exportFormatBtn" aria-haspopup="true" aria-expanded="false">▼</button>
+      <div class="format-dropdown" id="formatDropdown">
+        <button data-format="png">PNG</button>
+        <button data-format="jpeg">JPEG</button>
+        <button data-format="webp">WEBP</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <section class="preview-container" id="preview" aria-live="polite" aria-atomic="true" tabindex="0" aria-label="Choker Live Preview">
@@ -657,102 +828,110 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 (() => {
-  // Color groups with their hex variables and updated correct names (removed parentheticals)
   const colorMap = {
-    /* Leather Colors */
-    "Black": "var(--black)",
-    "Black with White Stitching": "var(--bw-stitch-black)",
-    "White": "var(--white-leather)",
-    "Blue": "var(--blue-leather)",
-    "Sky Blue": "var(--sky-blue-leather)",
-    "Red": "var(--red-leather)",
-    "Pink": "var(--pink-leather)",
-    "Purple": "var(--purple-leather)",
-
-    /* Spike Colors */
-    "Gold": "var(--gold-spikes)",
-    "Green": "var(--green-spikes)",
-    "Gunmetal": "var(--gunmetal-spikes)",
-    "Hot Pink": "var(--hot-pink-spikes)",
-    "Light Pink": "var(--light-pink-spikes)",
-    "Orange": "var(--orange-spikes)",
-    "Yellow": "var(--yellow-spikes)",
-    "Brown": "var(--brown-spikes)",
-    "Teal": "var(--teal-spikes)",
-    "Pink (Spikes)": "var(--pink-spikes)",
-    "Purple (Spikes)": "var(--purple-spikes)",
-    "Red (Spikes)": "var(--red-spikes)",
-
-    /* Small Chain Colors (Confirmed names) */
-    "Orange": "var(--orange)",
-    "Green": "var(--solid-green)",
-    "Hot Pink": "var(--solid-hot-pink)",
-    "Light Pink": "var(--solid-pink)",
-    "Purple": "var(--solid-purple)",
-    "Teal": "var(--solid-teal)",
-    "Translucent Green": "var(--translucent-green)",
-    "Translucent Lavender": "var(--translucent-lavender)",
-    "Translucent Orange": "var(--translucent-orange)",
-    "Translucent Pink": "var(--translucent-pink)",
-    "Translucent Salmon": "var(--translucent-salmon)",
-    "Translucent Sky Blue": "var(--translucent-sky-blue)",
-    "Translucent Teal": "var(--translucent-teal)",
-    "Translucent Yellow": "var(--translucent-yellow)",
-    "White": "var(--white-small-chain)",
-
-    /* Chunky Chain Colors (Confirmed names) */
-    "Black": "var(--black-chunky)",
-    "Blue": "var(--blue-chunky)",
-    "Brown": "var(--brown-chunky)",
-    "Green": "var(--green-chunky)",
-    "Orange": "var(--orange-chunky)",
-    "Pink": "var(--pink-chunky)",
-    "Purple": "var(--purple-chunky)",
-    "Red": "var(--red-chunky)",
-    "Sky Blue": "var(--sky-blue-chunky)",
-    "Teal": "var(--teal-chunky)",
-    "White": "var(--white-chunky)",
-    
-    /* Glow in the Dark Star Colors */
-    "Blue": "var(--blue-glow-in-the-dark-star)",
-    "Green": "var(--green-glow-in-the-dark-star)",
-    "Orange": "var(--orange-glow-in-the-dark-star)",
-    "Peach": "var(--peach-glow-in-the-dark-star)",
-    "Pink": "var(--pink-glow-in-the-dark-star)",
-    "Purple": "var(--purple-glow-in-the-dark-star)",
-    "White": "var(--white-glow-in-the-dark-star)",
-
-    /* Pendant Colors */
-    "Light": "var(--light-pendant)",
-    "Dark": "var(--dark-pendant)",
-
-    
-
-    /* None fallback */
-    "None": "transparent"
+    "leather": {
+      "Black": "var(--black)",
+      "Black with White Stitching": "var(--bw-stitch-black)",
+      "White": "var(--white-leather)",
+      "Blue": "var(--blue-leather)",
+      "Sky Blue": "var(--sky-blue-leather)",
+      "Red": "var(--red-leather)",
+      "Pink": "var(--pink-leather)",
+      "Purple": "var(--purple-leather)"
+    },
+    "spikes": {
+      "White": "var(--white-spikes)",
+      "Black": "var(--black-spikes)",
+      "Gold": "var(--gold-spikes)",
+      "Green": "var(--green-spikes)",
+      "Gunmetal": "var(--gunmetal-spikes)",
+      "Hot Pink": "var(--hot-pink-spikes)",
+      "Light Pink": "var(--light-pink-spikes)",
+      "Orange": "var(--orange-spikes)",
+      "Yellow": "var(--yellow-spikes)",
+      "Pink": "var(--pink-spikes)",
+      "Purple": "var(--purple-spikes)",
+      "Red": "var(--red-spikes)",
+      "Sky Blue": "var(--sky-blue-spikes)",
+      "Blue": "var(--blue-spikes)"
+    },
+    "small-chains": {
+      "Red": "#D22A25",
+      "Orange": "var(--orange)",
+      "Translucent Orange": "var(--translucent-orange)",
+      "Yellow": "#FFD700",
+      "Translucent Yellow": "var(--translucent-yellow)", 
+      "Green": "var(--solid-green)",
+      "Translucent Green": "var(--translucent-green)",
+      "Teal": "var(--solid-teal)",
+      "Translucent Teal": "var(--translucent-teal)",
+      "Translucent Sky Blue": "var(--translucent-sky-blue)",
+      "Blue": "#236cd1",
+      "Purple": "var(--solid-purple)",
+      "Translucent Lavender": "var(--translucent-lavender)",
+      "Hot Pink": "var(--solid-hot-pink)",
+      "Light Pink": "var(--solid-pink)",
+      "Translucent Pink": "var(--translucent-pink)",
+      "Translucent Salmon": "var(--translucent-salmon)",
+      "White": "var(--white-small-chain)"
+    },
+    "chunky-chains": {
+      "Black": "var(--black-chunky)",
+      "Blue": "var(--blue-chunky)",
+      "Brown": "var(--brown-chunky)",
+      "Green": "var(--green-chunky)",
+      "Orange": "var(--orange-chunky)",
+      "Pink": "var(--pink-chunky)",
+      "Purple": "var(--purple-chunky)",
+      "Red": "var(--red-chunky)",
+      "Sky Blue": "var(--sky-blue-chunky)",
+      "Teal": "var(--teal-chunky)",
+      "White": "var(--white-chunky)"
+    },
+    "glow-star": {
+      "Blue": "var(--blue-glow-in-the-dark-star)",
+      "Green": "var(--green-glow-in-the-dark-star)",
+      "Orange": "var(--orange-glow-in-the-dark-star)",
+      "Peach": "var(--peach-glow-in-the-dark-star)",
+      "Pink": "var(--pink-glow-in-the-dark-star)",
+      "Purple": "var(--purple-glow-in-the-dark-star)",
+      "White": "var(--white-glow-in-the-dark-star)"
+    },
+    "pendant": {
+      "Light": "var(--light-pendant)",
+      "Dark": "var(--dark-pendant)"
+    }
   };
+
+  // Helper function to get section-specific color
+  function getColor(section, colorName, fallback = '#888888') {
+    return colorMap[section]?.[colorName] || fallback;
+  }
 
   const $ = id => document.getElementById(id);
 
   // Use updated full color arrays consistent with confirmed color names
   const spikeColors = [
-    "Black", "Blue", "Gold", "Green", "Gunmetal", "Hot Pink", "Light Pink",
-    "Orange", "Purple", "Red", "Sky Blue", "White", "Yellow"
+    "Red", "Orange", "Yellow", "Gold", "Green",
+    "Sky Blue", "Blue", "Purple", "Light Pink",
+    "Hot Pink", "White", "Gunmetal", "Black"
   ];
 
   // Small Chain colors without "(Small Chain)" or "Solid" prefixes removed for checklist
   // Only uses colors exactly as per confirmed names for user checkbox
   const chainColorsSmall = [
-    "Orange", "Green", "Hot Pink", "Light Pink", "Purple", "Teal",
-    "Translucent Green", "Translucent Lavender", "Translucent Orange", "Translucent Pink",
-    "Translucent Salmon", "Translucent Sky Blue", "Translucent Teal", "Translucent Yellow",
+    "Red", "Orange", "Translucent Orange", "Yellow", "Translucent Yellow",
+    "Green", "Translucent Green", "Teal", "Translucent Teal",
+    "Translucent Sky Blue", "Blue", "Purple", "Translucent Lavender",
+    "Hot Pink", "Light Pink", "Translucent Pink", "Translucent Salmon",
     "White"
   ];
 
   // Chunky chain colors exactly as confirmed names
   const chainColorsChunky = [
-    "Black", "Blue", "Brown", "Green", "Orange", "Pink",
-    "Purple", "Red", "Sky Blue", "Teal", "White"
+    "Red", "Orange", "Brown", "Green", "Teal",
+    "Sky Blue", "Blue", "Purple", "Pink", "White",
+    "Black"
   ];
 
   // UI elements
@@ -780,6 +959,8 @@
   const glowStarColor = $('glowStarColor');
   const labelGlowStarColor = $('labelGlowStarColor');
   const exportBtn = $('exportBtn');
+  const exportFormatBtn = $('exportFormatBtn');
+  const formatDropdown = $('formatDropdown');
 
   const leatherBar = $('leatherBar');
   const spikeOverlay = $('spikeOverlay');
@@ -788,13 +969,178 @@
   const pendantGap = $('pendantGap');
   const pendantDisplay = $('pendantDisplay');
 
+  const saveDesignBtn = $('saveDesign');
+  const importDesignBtn = $('importDesign');
+  const exportDesignBtn = $('exportDesign');
+  const deleteDesignBtn = $('deleteDesign');
+  const importInput = $('importInput');
+  const savedDesignSelector = $('savedDesignSelector');
+
+  // Load saved designs from localStorage
+  function loadSavedDesigns() {
+    const designs = JSON.parse(localStorage.getItem('chokerDesigns') || '{}');
+    savedDesignSelector.innerHTML = '<option value="">-- Select Saved Design --</option>';
+    Object.keys(designs).sort().forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      savedDesignSelector.appendChild(option);
+    });
+    deleteDesignBtn.disabled = !savedDesignSelector.value;
+  }
+
+  // Get current design state
+  function getCurrentDesign() {
+    return {
+      chokerSize: chokerSize.value,
+      baseColor: baseColor.value,
+      spikeStyle: spikeStyle.value,
+      spikeColors: [...spikeColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value),
+      chainStyle: chainStyle.value,
+      smallChainPattern: smallChainColorPattern.value,
+      smallChainColors: [...smallChainColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value),
+      chunkyChainPattern: chunkyChainColorPattern.value,
+      chunkyChainColors: [...chunkyChainColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value),
+      pendantStyle: pendantStyle.value,
+      oRingColor: oRingColor.value,
+      oRingSize: oRingSize.value,
+      glowStarColor: glowStarColor.value
+    };
+  }
+
+  // Apply a saved design
+  function applyDesign(design) {
+    if (!design) return;
+    
+    const setSelectValue = (select, value) => {
+      if (!select || !value) return;
+      select.value = value;
+    };
+
+    setSelectValue(chokerSize, design.chokerSize);
+    setSelectValue(baseColor, design.baseColor);
+    setSelectValue(spikeStyle, design.spikeStyle);
+    setSelectValue(chainStyle, design.chainStyle);
+    setSelectValue(smallChainColorPattern, design.smallChainPattern);
+    setSelectValue(chunkyChainColorPattern, design.chunkyChainPattern);
+    setSelectValue(pendantStyle, design.pendantStyle);
+    setSelectValue(oRingColor, design.oRingColor);
+    setSelectValue(oRingSize, design.oRingSize);
+    setSelectValue(glowStarColor, design.glowStarColor);
+
+    // Reset all checkboxes
+    document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+    // Set checked colors
+    const setCheckedColors = (container, colors) => {
+      if (!colors) return;
+      colors.forEach(color => {
+        const checkbox = container.querySelector(`input[value="${color}"]`);
+        if (checkbox) checkbox.checked = true;
+      });
+    };
+
+    setCheckedColors(spikeColorsChecklist, design.spikeColors);
+    setCheckedColors(smallChainColorsChecklist, design.smallChainColors);
+    setCheckedColors(chunkyChainColorsChecklist, design.chunkyChainColors);
+
+    // Update UI state
+    updateSpikeColorsVisibility();
+    updateSmallChainControls();
+    updateChunkyChainControls();
+    updatePendantControls();
+    updatePreviewAndValidation();
+  }
+
+  // Save current design
+  saveDesignBtn.addEventListener('click', () => {
+    const name = prompt('Enter a name for this design:');
+    if (!name) return;
+
+    const designs = JSON.parse(localStorage.getItem('chokerDesigns') || '{}');
+    designs[name] = getCurrentDesign();
+    localStorage.setItem('chokerDesigns', JSON.stringify(designs));
+    loadSavedDesigns();
+    savedDesignSelector.value = name;
+    deleteDesignBtn.disabled = false;
+  });
+
+  // Load selected design
+  savedDesignSelector.addEventListener('change', () => {
+    const name = savedDesignSelector.value;
+    deleteDesignBtn.disabled = !name;
+    if (!name) return;
+
+    const designs = JSON.parse(localStorage.getItem('chokerDesigns') || '{}');
+    const design = designs[name];
+    if (design) {
+      applyDesign(design);
+    }
+  });
+
+  // Import design from file
+  importDesignBtn.addEventListener('click', () => {
+    importInput.click();
+  });
+
+  importInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const design = JSON.parse(e.target.result);
+        applyDesign(design);
+      } catch (err) {
+        alert('Invalid design file');
+      }
+    };
+    reader.readAsText(file);
+    importInput.value = ''; // Reset input
+  });
+
+  // Export current design
+  exportDesignBtn.addEventListener('click', () => {
+    const design = getCurrentDesign();
+    const blob = new Blob([JSON.stringify(design, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'choker-design.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // Delete selected design
+  deleteDesignBtn.addEventListener('click', () => {
+    const name = savedDesignSelector.value;
+    if (!name) return;
+
+    if (!confirm(`Are you sure you want to delete the design "${name}"?`)) return;
+
+    const designs = JSON.parse(localStorage.getItem('chokerDesigns') || '{}');
+    delete designs[name];
+    localStorage.setItem('chokerDesigns', JSON.stringify(designs));
+    loadSavedDesigns();
+    deleteDesignBtn.disabled = true;
+  });
+
   // Populate checklist helper
   function populateChecklist(container, colors) {
     container.innerHTML = "";
+    const containerType = container.id.replace('Checklist', '').replace('Colors', '');
+    
     colors.forEach(color => {
       const id = container.id + "_" + color.replace(/\s+/g, '');
       const label = document.createElement('label');
-      label.style.setProperty('--swatch-color', colorMap[color] || '#888');
+      const section = containerType === 'spike' ? 'spikes' :
+                     containerType === 'smallChain' ? 'small-chains' :
+                     containerType === 'chunkyChain' ? 'chunky-chains' : '';
+      
+      label.style.setProperty('--swatch-color', getColor(section, color, '#888'));
       label.htmlFor = id;
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -977,9 +1323,26 @@
     if(!order) return;
 
     const setSelectVal = (select, val) => {
-      if(!select) return;
-      val = val || '';
-      const option = Array.from(select.options).find(o => o.text.trim().toLowerCase() === val.trim().toLowerCase());
+      if(!select || !val) return;
+      val = val.toString().trim();
+      // Handle special case for O-Ring size which may come as number or text
+      if (select === oRingSize) {
+        // Convert inches format if needed
+        if (!val.endsWith('in')) {
+          const num = parseFloat(val);
+          if (!isNaN(num)) {
+            val = num.toFixed(2) + 'in';
+          }
+        }
+        const matchingOption = Array.from(select.options).find(o => 
+          o.text.toLowerCase() === val.toLowerCase()
+        );
+        select.value = matchingOption ? matchingOption.text : '';
+        return;
+      }
+      const option = Array.from(select.options).find(o => 
+        o.text.trim().toLowerCase() === val.toLowerCase()
+      );
       select.value = option ? option.text : "";
     };
 
@@ -1023,63 +1386,91 @@
     orderHelp.textContent = `Loaded order: ${ts}`;
   });
 
-  // Spike render with corrected 3 Color Reverse pattern and fixed colors usage
+  // Spike render with corrected patterns and modifiers
   function renderSpikes() {
     spikeOverlay.innerHTML = "";
-    if(!spikeStyle.value || spikeStyle.value === "No Spikes" || spikeStyle.value === "Unselected") return;
-    let count = 11;
-    if(pendantStyle.value === 'O-Ring') count = 10;
+    if (!spikeStyle.value || spikeStyle.value === "No Spikes" || spikeStyle.value === "Unselected") return;
 
+    const baseCount = pendantStyle.value === 'O-Ring' ? 10 : 11;
     const checkedColors = [...spikeColorsChecklist.querySelectorAll('input[type=checkbox]:checked')]
       .map(cb => cb.value);
 
-    if(spikeStyle.value === 'Solid Color' && checkedColors.length < 1) return;
-    else if(spikeStyle.value !== 'Solid Color' && checkedColors.length < 1) return;
+    if (checkedColors.length < 1) return;
 
-    const seq3rev = [0,1,2,1,0,1,2,1,0,1,2];
-
-    for(let i=0; i<count; i++) {
-      let spikeColor = '#777777';
-      switch(spikeStyle.value) {
-        case 'Solid Color':
-          spikeColor = colorMap[checkedColors[0]] || '#888888';
-          break;
+    const hasMiddle = baseCount % 2 === 1;
+    const sideCount = Math.floor(baseCount / 2);
+    
+    // Generate the pattern for the left side
+    const leftPattern = [];
+    for (let i = 0; i < sideCount; i++) {
+      switch (spikeStyle.value) {
         case 'Alternating Color':
-          spikeColor = colorMap[checkedColors[i % checkedColors.length]] || '#888888';
+          leftPattern.push(checkedColors[i % checkedColors.length]);
           break;
         case '3 Color Reverse':
-          if(checkedColors.length < 3) {
-            spikeColor = colorMap[checkedColors[i % checkedColors.length]] || '#888888';
-          } else {
-            spikeColor = colorMap[checkedColors[seq3rev[i % seq3rev.length]]] || '#888888';
-          }
+        const seq3 = [0, 1, 2, 1, 0, 2, 0, 1, 2, 1, 0];
+          leftPattern.push(checkedColors[seq3[i % seq3.length]]);
           break;
         case 'Full Color Reverse': {
           const n = checkedColors.length;
-          let idx = i % (2*n);
-          if(idx >= n) idx = (2*n) - 1 - idx;
-          spikeColor = colorMap[checkedColors[idx]] || '#888888';
+          const totalPattern = n * 2;
+          let idx = i % totalPattern;
+          if (idx >= n) idx = totalPattern - 1 - idx;
+          leftPattern.push(checkedColors[idx]);
           break;
         }
-        default:
-          spikeColor = colorMap[checkedColors[0]] || '#888888';
+        default: // Solid Color
+          leftPattern.push(checkedColors[0]);
       }
+    }
+
+    // Create right pattern by mirroring left
+    const rightPattern = [...leftPattern].reverse();
+    
+    // Get middle spike color based on pattern type
+    const getMiddleColor = () => {
+      switch (spikeStyle.value) {
+        case 'Alternating Color':
+          return checkedColors[sideCount % checkedColors.length];
+        case '3 Color Reverse':
+          return checkedColors[0]; // Center point of reverse
+        case 'Full Color Reverse':
+          return checkedColors[0]; // Reset point for reverse
+        default:
+          return checkedColors[0];
+      }
+    };
+
+    // Combine patterns with middle spike if needed
+    const fullPattern = [
+      ...leftPattern,
+      ...(hasMiddle ? [getMiddleColor()] : []),
+      ...rightPattern
+    ];
+
+    // Render all spikes
+    fullPattern.forEach(color => {
       const spike = document.createElement('div');
       spike.className = 'spike';
-      spike.style.backgroundColor = spikeColor;
+      spike.style.backgroundColor = getColor('spikes', color, '#888888');
+      if (spikeStyle.value === 'Full Color Reverse') {
+        spike.style.outline = '2px solid rgba(100, 100, 100, 0.8)';
+      }
       spikeOverlay.appendChild(spike);
-    }
+    });
   }
 
   // Update leather base color and styling
   function updateLeatherBar() {
-    if(baseColor.value === 'Black with White Stitching') {
+    if(baseColor.value === 'Black with White Stitching')
+    {
       leatherBar.classList.add('black-white-stitch');
-      leatherBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--bw-stitch-black').trim() || '#000000';
+      leatherBar.style.backgroundColor = getColor('leather', 'Black with White Stitching', '#000000');
       leatherBar.style.borderColor = getComputedStyle(document.body).getPropertyValue('--container-border-dark').trim() || '#444444';
-    } else {
+    } 
+    else {
       leatherBar.classList.remove('black-white-stitch');
-      leatherBar.style.backgroundColor = colorMap[baseColor.value] || '#333333';
+      leatherBar.style.backgroundColor = getColor('leather', baseColor.value, '#333333');
       leatherBar.style.borderColor = 'transparent';
     }
   }
@@ -1087,7 +1478,8 @@
   // Update pendant display
   function updatePendant() {
     pendantDisplay.innerHTML = "";
-    if(!pendantStyle.value || pendantStyle.value === "None") {
+    if(!pendantStyle.value || pendantStyle.value === "None")
+    {
       pendantGap.style.display = 'none';
       return;
     }
@@ -1096,11 +1488,17 @@
       const ring = document.createElement('div');
       ring.className = 'pendant-ring';
       let color = '#cccccc';
-      if(oRingColor.value === 'Light') color = colorMap["Light"];
-      if(oRingColor.value === 'Dark') color = colorMap["Dark"];
+      if(oRingColor.value === 'Light') color = getColor('pendant', 'Light', '#cccccc');
+      if(oRingColor.value === 'Dark') color = getColor('pendant', 'Dark', '#444444');
       ring.style.borderColor = color;
-      const sizeMap = { XS: 18, S: 22, M: 30, L: 38, XL: 46 };
-      const sizePx = sizeMap[oRingSize.value] || 40;
+      const sizeMap = { 
+        '0.75in': 40,
+        '1.00in': 50, 
+        '1.25in': 60,
+        '1.50in': 70,
+        '1.75in': 80
+      };
+      const sizePx = sizeMap[oRingSize.value] || 32;
       ring.style.width = sizePx + 'px';
       ring.style.height = sizePx + 'px';
       pendantDisplay.appendChild(ring);
@@ -1108,9 +1506,9 @@
       const star = document.createElement('span');
       star.className = 'pendant-star';
       star.textContent = '★';
-      const glowColor = glowStarColor.value ? (colorMap[glowStarColor.value] || '#ffffff') : '#ffffff';
+      const glowColor = glowStarColor.value ? getColor('glow-star', glowStarColor.value, '#ffffff') : '#ffffff';
       star.style.color = glowColor;
-      star.style.textShadow = `0 0 6px ${glowColor}, 0 0 20px ${glowColor}, 0 0 30px ${glowColor}, 0 0 40px ${glowColor}`;
+      star.style.textShadow = `0 0 3px ${glowColor}, 0 0 10px ${glowColor}, 0 0 0px ${glowColor}, 0 0 40px ${glowColor}`;
       pendantDisplay.appendChild(star);
     } else {
       pendantGap.style.display = 'none';
@@ -1125,28 +1523,23 @@
     renderSpikes();
     updatePendant();
 
-    // Collect checked colors from checklists mapped to mapped colors
+    // Update to use values instead of mapped colors for chains
     const smallColorsChecked = [...smallChainColorsChecklist.querySelectorAll('input[type=checkbox]:checked')]
-      .map(cb => colorMap[cb.value] || '#777777');
+      .map(cb => cb.value);
     const chunkyColorsChecked = [...chunkyChainColorsChecklist.querySelectorAll('input[type=checkbox]:checked')]
-      .map(cb => colorMap[cb.value] || '#777777');
+      .map(cb => cb.value);
 
     chainLeft.innerHTML = "";
     chainRight.innerHTML = "";
 
     if(chainStyle.value === "Small Chains") {
-      // Use 40 total links as per specs: 20 left + GAP + 20 right
       const colors = generateSymmetricChainColors(smallChainColorPattern.value, smallColorsChecked, 40);
-      renderSymmetricChainLinks(chainLeft, "Small Chains", colors.left);
-      renderSymmetricChainLinks(chainRight, "Small Chains", colors.right);
+      renderSymmetricChainLinks(chainLeft, "small-chains", colors.left);
+      renderSymmetricChainLinks(chainRight, "small-chains", colors.right);
     } else if(chainStyle.value === "Chunky Chains") {
-      // Use 16 total links: 8 left + GAP + 8 right
       const colors = generateSymmetricChainColors(chunkyChainColorPattern.value, chunkyColorsChecked, 16);
-      renderSymmetricChainLinks(chainLeft, "Chunky Chains", colors.left);
-      renderSymmetricChainLinks(chainRight, "Chunky Chains", colors.right);
-    } else {
-      chainLeft.style.alignItems = "initial";
-      chainRight.style.alignItems = "initial";
+      renderSymmetricChainLinks(chainLeft, "chunky-chains", colors.left);
+      renderSymmetricChainLinks(chainRight, "chunky-chains", colors.right);
     }
   }
 
@@ -1192,33 +1585,36 @@
     return { left: leftColors, right: rightColors };
   }
 
-  // Render chain links from precomputed colors
-  function renderSymmetricChainLinks(container, style, colors) {
+  // Update chain rendering to use section-specific colors
+  function renderSymmetricChainLinks(container, section, colors) {
     container.innerHTML = "";
-    if(!style || colors.length === 0) {
+    if(!colors.length) {
       container.style.alignItems = "initial";
       return;
     }
+    
     colors.forEach(color => {
       const link = document.createElement('div');
       link.classList.add('chain-link');
-      link.style.backgroundColor = color || "#777777";
-      if(style === "Small Chains") {
-        link.classList.add('small');
-      } else if(style === "Chunky Chains") {
-        link.classList.add('chunky');
-      }
+      link.style.backgroundColor = getColor(section, color, "#777777");
+      link.classList.add(section === "small-chains" ? 'small' : 'chunky');
       container.appendChild(link);
     });
+    
     container.style.alignItems = "center";
-    layoutChainSegmentUShapeFlipped(container);
+    // Use different layout functions based on chain type
+    if (section === "small-chains") {
+      layoutSmallChainUShape(container);
+    } else {
+      layoutChunkyChainUShape(container);
+    }
   }
 
-  // Chain links layout with subtle U shape flipped curvature
-  function layoutChainSegmentUShapeFlipped(container) {
+  // Small chain links layout with subtle U shape
+  function layoutSmallChainUShape(container) {
     const count = container.children.length;
     if(count === 0) return;
-    const a = -0.12;
+    const a = -0.70; // Steeper curve for small chains
     const h = (count - 1) / 2;
     const k = 18;
     for(let i=0; i<count; i++) {
@@ -1230,9 +1626,26 @@
     }
   }
 
+  // Chunky chain links layout with gentler U shape
+  function layoutChunkyChainUShape(container) {
+    const count = container.children.length;
+    if(count === 0) return;
+    const a = -3.85; // Gentler curve for chunky chains
+    const h = (count - 1) / 2;
+    const k = 15; // Slightly lower peak
+    for(let i=0; i<count; i++) {
+      const x = i;
+      const y = a * (x - h) * (x - h) + k;
+      const link = container.children[i];
+      link.style.position = "relative";
+      link.style.top = y + "px";
+    }
+  }
+
   exportBtn.addEventListener("click", async () => {
+    const format = exportFormatBtn.dataset.format || "png";
     exportBtn.disabled = true;
-    exportBtn.textContent = "Exporting...";
+    exportBtn.textContent = `Exporting ${format.toUpperCase()}...`;
     try {
       const canvas = await html2canvas($("preview"), {
         backgroundColor: null,
@@ -1243,24 +1656,48 @@
         if (!blob) {
           alert("Export failed: could not create image blob.");
           exportBtn.disabled = false;
-          exportBtn.textContent = "Export Preview as PNG";
+          exportBtn.textContent = `Export as ${format.toUpperCase()}`;
           return;
         }
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = "choker-preview.png";
+        link.download = `choker-preview.${format}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         exportBtn.disabled = false;
-        exportBtn.textContent = "Export Preview as PNG";
-      }, "image/png");
+        exportBtn.textContent = `Export as ${format.toUpperCase()}`;
+      }, `image/${format}`);
     } catch (e) {
       alert("Export failed: " + e.message);
       exportBtn.disabled = false;
-      exportBtn.textContent = "Export Preview as PNG";
+      exportBtn.textContent = `Export as ${format.toUpperCase()}`;
+    }
+  });
+
+  exportFormatBtn.addEventListener("click", () => {
+    const isExpanded = exportFormatBtn.getAttribute("aria-expanded") === "true";
+    exportFormatBtn.setAttribute("aria-expanded", !isExpanded);
+    formatDropdown.classList.toggle("show");
+  });
+
+  formatDropdown.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") {
+      const format = e.target.dataset.format;
+      exportFormatBtn.dataset.format = format;
+      exportBtn.textContent = `Export as ${format.toUpperCase()}`;
+      exportFormatBtn.setAttribute("aria-expanded", false);
+      formatDropdown.classList.remove("show");
+    }
+  });
+
+  // Add click outside listener to close dropdown
+  document.addEventListener("click", (e) => {
+    if (!exportFormatBtn.contains(e.target) && !formatDropdown.contains(e.target)) {
+      exportFormatBtn.setAttribute("aria-expanded", false);
+      formatDropdown.classList.remove("show");
     }
   });
 
@@ -1298,6 +1735,11 @@
   });
 
   window.addEventListener('DOMContentLoaded', () => {
+    // Check if mobile
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        document.getElementById('mobilePopup').style.display = 'block';
+    }
+    
     populateChecklist(spikeColorsChecklist, spikeColors);
     populateChecklist(smallChainColorsChecklist, chainColorsSmall);
     populateChecklist(chunkyChainColorsChecklist, chainColorsChunky);
@@ -1307,9 +1749,21 @@
     updateChunkyChainControls();
     updatePendantControls();
     updatePreviewAndValidation();
+    // Set initial format and button text
+    exportFormatBtn.dataset.format = "png";
+    exportBtn.textContent = "Export as PNG";
+    loadSavedDesigns();
   });
+
+  function dismissMobilePopup() {
+    document.getElementById('mobilePopup').style.display = 'none';
+  }
 
 })();
 </script>
+<div id="mobilePopup" class="mobile-popup">
+    <p>For best experience, please enable desktop site. Thank you.</p>
+    <button onclick="dismissMobilePopup()">OK</button>
+</div>
 </body>
 </html>
