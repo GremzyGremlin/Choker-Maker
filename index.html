@@ -254,7 +254,7 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible; /* Change from hidden to visible */
     margin-bottom: 1rem;
     position: relative;
   }
@@ -367,6 +367,16 @@ html {
     background-color: var(--bg-check, #222);
     transition: background-color 0.3s, border-color 0.3s;
     position: relative;
+    cursor: grab;
+  }
+
+  .checkbox-group label.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+
+  .checkbox-group label.drag-over {
+    border-color: var(--sakura-pink);
   }
 
   body.light .checkbox-group label {
@@ -747,6 +757,82 @@ html {
     color: black;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
+
+  .reset-buttons {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .reset-buttons > span {
+    font-size: 0.8rem;
+    color: inherit;
+    opacity: 0.7;
+  }
+
+  .reset-buttons > div {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .reset-btn {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    color: inherit; /* Ensure button text inherits parent color */
+  }
+
+  .reset-btn:hover {
+    background: var(--sakura-pink);
+    border-color: var(--sakura-pink);
+    transform: scale(1.1);
+  }
+
+  body.light .reset-btn {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+
+  .reset-btn[data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 1rem); /* Increase distance from button */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 10000; /* Ensure tooltip appears above everything */
+    pointer-events: none;
+  }
+
+  body.light .reset-btn[data-tooltip]:before {
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .reset-btn:hover[data-tooltip]:before {
+    opacity: 1;
+    visibility: visible;
+  }
 </style>
 </head>
 <body>
@@ -907,6 +993,12 @@ html {
       <div id="pendantDisplay" aria-label="Pendant preview" role="img"></div>
     </div>
     <div id="chainRight" class="chain-segment" role="list" aria-label="Right side chain"></div>
+  </div>
+  <div class="reset-buttons">
+    <span></span>
+    <div>
+      <button class="reset-btn" id="resetColorsBtn" aria-label="Reset color order">🎨</button>
+    </div>
   </div>
 </section>
 
@@ -1232,19 +1324,24 @@ html {
                      containerType === 'smallChain' ? 'small-chains' :
                      containerType === 'chunkyChain' ? 'chunky-chains' : '';
       
-      label.style.setProperty('--swatch-color', getColor(section, color, '#888'));
-      label.htmlFor = id;
+      const swatchColor = getColor(section, color, '#888');
+      label.style.setProperty('--swatch-color', swatchColor);
+      
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = id;
       checkbox.name = container.id;
       checkbox.value = color;
+      
       const span = document.createElement('span');
       span.textContent = color;
+      
       label.appendChild(checkbox);
       label.appendChild(span);
       container.appendChild(label);
     });
+
+    makeChecklistDraggable(container);
   }
 
   function updateSpikeColorsVisibility() {
@@ -1482,7 +1579,9 @@ html {
     if (!spikeStyle.value || spikeStyle.value === "No Spikes" || spikeStyle.value === "Unselected") return;
 
     const baseCount = pendantStyle.value === 'O-Ring' ? 10 : 11;
-    const checkedColors = [...spikeColorsChecklist.querySelectorAll('input[type=checkbox]:checked')]
+    
+    // Get checked colors in their current DOM order
+    const checkedColors = [...spikeColorsChecklist.querySelectorAll('input:checked')]
       .map(cb => cb.value);
 
     if (checkedColors.length < 1) return;
@@ -1834,40 +1933,38 @@ html {
     }
   });
 
-  // Dark mode toggle button with icon and aria-label switching
-const modeToggle = document.getElementById('modeToggle');
-
-// Load saved mode preference
-function loadModePreference() {
-  const storedMode = localStorage.getItem('darkMode');
-  // If no stored preference, default to dark
-  if (storedMode === null) {
-    document.body.classList.remove('light');
-    localStorage.setItem('darkMode', 'true');
-  } else {
-    document.body.classList.toggle('light', storedMode === 'false');
+  // Move mode toggle code inside main closure
+  const modeToggle = document.getElementById('modeToggle');
+  
+  function loadModePreference() {
+    const storedMode = localStorage.getItem('darkMode');
+    if (storedMode === null) {
+      document.body.classList.remove('light');
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      document.body.classList.toggle('light', storedMode === 'false');
+    }
+    updateModeIcon();
   }
-  updateModeIcon();
-}
 
-function updateModeIcon() {
-  if(document.body.classList.contains('light')) {
-    modeToggle.textContent = '☀️';
-    modeToggle.title = 'Switch to Dark Mode';
-    modeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
-  } else {
-    modeToggle.textContent = '🌙';
-    modeToggle.title = 'Switch to Light Mode';
-    modeToggle.setAttribute('aria-label', 'Switch to Light Mode');
+  function updateModeIcon() {
+    if(document.body.classList.contains('light')) {
+      modeToggle.textContent = '☀️';
+      modeToggle.title = 'Switch to Dark Mode';
+      modeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
+    } else {
+      modeToggle.textContent = '🌙';
+      modeToggle.title = 'Switch to Light Mode';
+      modeToggle.setAttribute('aria-label', 'Switch to Light Mode');
+    }
   }
-}
 
-modeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('light');
-  // Save mode preference
-  localStorage.setItem('darkMode', !document.body.classList.contains('light'));
-  updateModeIcon();
-});
+  modeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    // Save mode preference
+    localStorage.setItem('darkMode', !document.body.classList.contains('light'));
+    updateModeIcon();
+  });
 
   // Bind inputs and checkboxes to update UI dynamically
   const inputs = [baseColor, spikeStyle, chainStyle, smallChainColorPattern,
@@ -1944,6 +2041,165 @@ modeToggle.addEventListener('click', () => {
     return getComputedStyle(label).getPropertyValue('--swatch-color').trim();
   }
 
+  function makeChecklistDraggable(container) {
+  let draggedElement = null;
+  let draggedPos = null;
+
+  container.querySelectorAll('label').forEach(label => {
+    label.draggable = true;
+
+    label.addEventListener('dragstart', (e) => {
+      draggedElement = label;
+      // Store initial position
+      draggedPos = [...container.children].indexOf(label);
+      label.classList.add('dragging');
+    });
+
+    label.addEventListener('dragend', () => {
+      draggedElement.classList.remove('dragging');
+      draggedElement = null;
+      draggedPos = null;
+    });
+
+    label.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (label !== draggedElement) {
+        label.classList.add('drag-over');
+      }
+    });
+
+    label.addEventListener('dragleave', () => {
+      label.classList.remove('drag-over');
+    });
+
+    label.addEventListener('drop', (e) => {
+      e.preventDefault();
+      label.classList.remove('drag-over');
+      
+      if (label !== draggedElement) {
+        const dropPos = [...container.children].indexOf(label);
+        
+        if (draggedPos < dropPos) {
+          label.parentNode.insertBefore(draggedElement, label.nextSibling);
+        } else {
+          label.parentNode.insertBefore(draggedElement, label);
+        }
+        
+        // Update preview after reordering
+        requestAnimationFrame(() => {
+          updatePreviewAndValidation();
+        });
+      }
+    });
+  });
+}
+
+  // Modify populateChecklist to properly set up checkboxes and colors
+  function populateChecklist(container, colors) {
+    container.innerHTML = "";
+    const containerType = container.id.replace('Checklist', '').replace('Colors', '');
+    
+    colors.forEach(color => {
+      const id = container.id + "_" + color.replace(/\s+/g, '');
+      const label = document.createElement('label');
+      const section = containerType === 'spike' ? 'spikes' :
+                     containerType === 'smallChain' ? 'small-chains' :
+                     containerType === 'chunkyChain' ? 'chunky-chains' : '';
+      
+      const swatchColor = getColor(section, color, '#888');
+      label.style.setProperty('--swatch-color', swatchColor);
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = id;
+      checkbox.name = container.id;
+      checkbox.value = color;
+      
+      const span = document.createElement('span');
+      span.textContent = color;
+      
+      label.appendChild(checkbox);
+      label.appendChild(span);
+      container.appendChild(label);
+    });
+
+    makeChecklistDraggable(container);
+  }
+
+  const resetColorsBtn = $('resetColorsBtn');
+  const resetAllBtn = $('resetAllBtn');
+
+  // Set tooltips
+  resetColorsBtn.setAttribute('data-tooltip', 'Reset color order');
+  resetAllBtn.setAttribute('data-tooltip', 'Reset all options');
+
+  resetColorsBtn.addEventListener('click', () => {
+    // Store checked states
+    const checkedStates = {
+      spikes: [...spikeColorsChecklist.querySelectorAll('input[type=checkbox]')]
+        .map(cb => ({value: cb.value, checked: cb.checked})),
+      small: [...smallChainColorsChecklist.querySelectorAll('input[type=checkbox]')]
+        .map(cb => ({value: cb.value, checked: cb.checked})),
+      chunky: [...chunkyChainColorsChecklist.querySelectorAll('input[type=checkbox]')]
+        .map(cb => ({value: cb.value, checked: cb.checked}))
+    };
+    
+    // Reset color order
+    populateChecklist(spikeColorsChecklist, spikeColors);
+    populateChecklist(smallChainColorsChecklist, chainColorsSmall);
+    populateChecklist(chunkyChainColorsChecklist, chainColorsChunky);
+    
+    // Restore checked states
+    checkedStates.spikes.forEach(({value, checked}) => {
+      const cb = spikeColorsChecklist.querySelector(`input[value="${value}"]`);
+      if (cb) cb.checked = checked;
+    });
+    checkedStates.small.forEach(({value, checked}) => {
+      const cb = smallChainColorsChecklist.querySelector(`input[value="${value}"]`);
+      if (cb) cb.checked = checked;
+    });
+    checkedStates.chunky.forEach(({value, checked}) => {
+      const cb = chunkyChainColorsChecklist.querySelector(`input[value="${value}"]`);
+      if (cb) cb.checked = checked;
+    });
+    
+    updatePreviewAndValidation();
+  });
+
+  resetAllBtn.addEventListener('click', () => {
+    if (!confirm('Reset all options to default?')) return;
+    
+    // Set specific default values
+    baseColor.value = 'Black with White Stitching';
+    spikeStyle.value = 'Alternating Color';
+    chainStyle.value = 'Small Chains';
+    smallChainColorPattern.value = '2 Color Alternating';
+    pendantStyle.value = 'None';
+
+    // Clear other selects
+    [chunkyChainColorPattern, oRingColor, oRingSize, glowStarColor].forEach(select => {
+      select.value = '';
+    });
+
+    // Uncheck all checkboxes
+    [spikeColorsChecklist, smallChainColorsChecklist, chunkyChainColorsChecklist]
+      .forEach(container => {
+        container.querySelectorAll('input[type=checkbox]')
+          .forEach(cb => cb.checked = false);
+      });
+
+    // Reset color order
+    populateChecklist(spikeColorsChecklist, spikeColors);
+    populateChecklist(smallChainColorsChecklist, chainColorsSmall);
+    populateChecklist(chunkyChainColorsChecklist, chainColorsChunky);
+
+    // Update UI
+    updateSpikeColorsVisibility();
+    updateSmallChainControls();
+    updateChunkyChainControls();
+    updatePendantControls();
+    updatePreviewAndValidation();
+  });
 })();
 </script>
 <div id="mobilePopup" class="mobile-popup">
