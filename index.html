@@ -667,17 +667,7 @@
       </select>
       <div id="orderHelp" class="sr-only" aria-live="polite"></div>
 
-      <label for="chokerSize">Choker Size *</label>
-      <select id="chokerSize" aria-required="true" aria-label="Choker Size" required autocomplete="off">
-        <option value="" disabled selected>-- Select Size --</option>
-        <option>XS (fits 10-12 inches)</option>
-        <option>S (fits 12-14 inches)</option>
-        <option>M (fits 14-16 inches)</option>
-        <option>L (fits 16-18 inches)</option>
-        <option>XL (fits 18-20 inches)</option>
-        <option>Other</option>
-      </select>
-
+      <!-- Remove choker size dropdown -->
       <label for="baseColor">Base Color *</label>
       <select id="baseColor" aria-required="true" aria-label="Base Color" required autocomplete="off">
         <option value="" disabled selected>-- Select Base Color --</option>
@@ -870,7 +860,7 @@
       "Purple": "var(--solid-purple)",
       "Translucent Lavender": "var(--translucent-lavender)",
       "Hot Pink": "var(--solid-hot-pink)",
-      "Light Pink": "var(--solid-pink)",
+      "Pink": "var(--solid-pink)",
       "Translucent Pink": "var(--translucent-pink)",
       "Translucent Salmon": "var(--translucent-salmon)",
       "White": "var(--white-small-chain)"
@@ -923,7 +913,7 @@
     "Red", "Orange", "Translucent Orange", "Yellow", "Translucent Yellow",
     "Green", "Translucent Green", "Teal", "Translucent Teal",
     "Translucent Sky Blue", "Blue", "Purple", "Translucent Lavender",
-    "Hot Pink", "Light Pink", "Translucent Pink", "Translucent Salmon",
+    "Hot Pink", "Pink", "Translucent Pink", "Translucent Salmon",
     "White"
   ];
 
@@ -937,7 +927,6 @@
   // UI elements
   const orderSelector = $('orderSelector');
   const orderHelp = $('orderHelp');
-  const chokerSize = $('chokerSize');
   const baseColor = $('baseColor');
   const spikeStyle = $('spikeStyle');
   const spikeColorsChecklist = $('spikeColorsChecklist');
@@ -992,7 +981,6 @@
   // Get current design state
   function getCurrentDesign() {
     return {
-      chokerSize: chokerSize.value,
       baseColor: baseColor.value,
       spikeStyle: spikeStyle.value,
       spikeColors: [...spikeColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value),
@@ -1017,7 +1005,6 @@
       select.value = value;
     };
 
-    setSelectValue(chokerSize, design.chokerSize);
     setSelectValue(baseColor, design.baseColor);
     setSelectValue(spikeStyle, design.spikeStyle);
     setSelectValue(chainStyle, design.chainStyle);
@@ -1273,7 +1260,6 @@
         const timestamp = cols[idx('timestamp')] || `Order ${i}`;
         const order = {
           timestamp,
-          size: cols[idx('size')] || '',
           baseColor: cols[idx('base color')] || '',
           spikeStyle: cols[idx('spike style')] || '',
           spikeColors: cols[idx('spike colors')] || '',
@@ -1346,7 +1332,6 @@
       select.value = option ? option.text : "";
     };
 
-    setSelectVal(chokerSize, order.size);
     setSelectVal(baseColor, order.baseColor);
     setSelectVal(spikeStyle, order.spikeStyle);
     setSelectVal(chainStyle, order.chainStyle);
@@ -1405,7 +1390,12 @@
     for (let i = 0; i < sideCount; i++) {
       switch (spikeStyle.value) {
         case 'Alternating Color':
-          leftPattern.push(checkedColors[i % checkedColors.length]);
+          // Fix alternating pattern to use proper modulo
+          if (checkedColors.length >= 2) {
+            leftPattern.push(checkedColors[Math.floor(i % checkedColors.length)]);
+          } else {
+            leftPattern.push(checkedColors[0]);
+          }
           break;
         case '3 Color Reverse':
         const seq3 = [0, 1, 2, 1, 0, 2, 0, 1, 2, 1, 0];
@@ -1517,7 +1507,7 @@
 
   // Update entire preview & validation and re-render chains/spikes/pendants
   function updatePreviewAndValidation() {
-    const valid = !!chokerSize.value && !!baseColor.value && !!spikeStyle.value && !!chainStyle.value;
+    const valid = !!baseColor.value && !!spikeStyle.value && !!chainStyle.value;
     exportBtn.disabled = !valid;
     updateLeatherBar();
     renderSpikes();
@@ -1721,7 +1711,7 @@
   updateModeIcon();
 
   // Bind inputs and checkboxes to update UI dynamically
-  const inputs = [chokerSize, baseColor, spikeStyle, chainStyle, smallChainColorPattern,
+  const inputs = [baseColor, spikeStyle, chainStyle, smallChainColorPattern,
     chunkyChainColorPattern, pendantStyle, oRingColor, oRingSize, glowStarColor];
   inputs.forEach(el => el.addEventListener('change', () => {
     updateSpikeColorsVisibility();
