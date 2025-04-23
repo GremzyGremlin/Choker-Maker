@@ -6,6 +6,16 @@
 <title>Choker Customizer | Full Symmetric Patterns & Updated Colors</title>
 <style>
   :root {
+    /* Default to dark theme */
+    color-scheme: dark;
+    
+    /* Updated dark theme colors */
+    --container-bg-dark: #1c1c1c;
+    --container-border-dark: #2d2d2d;
+    --select-focus-bg: #2d2d2d;
+    --bg-check: #2d2d2d;
+    --bg-check-hover: #363636;
+    
     /* Updated colors based on your detailed specification and spreadsheet */
     /* Base Colors (Leather) */
     --black: #111111;
@@ -92,6 +102,24 @@
     /* Scrollbar Colors */
     --scrollbar-bg: rgba(255, 183, 197, 0.05);
     --scrollbar-thumb: var(--sakura-pink);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --container-bg-dark: #1c1c1c;
+      --container-border-dark: #2d2d2d;
+      --select-focus-bg: #2d2d2d;
+      --bg-check: #2d2d2d;
+      --bg-check-hover: #363636;
+    }
+  }
+
+  /* Reset light theme when explicitly enabled */
+  body.light {
+    color-scheme: light;
+    background-color: var(--container-bg-light);
+    color: #333;
   }
 
 /* Custom Scrollbar Styles */
@@ -1807,23 +1835,39 @@ html {
   });
 
   // Dark mode toggle button with icon and aria-label switching
-  const modeToggle = document.getElementById('modeToggle');
-  function updateModeIcon() {
-    if(document.body.classList.contains('light')) {
-      modeToggle.textContent = '☀️';
-      modeToggle.title = 'Switch to Dark Mode';
-      modeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
-    } else {
-      modeToggle.textContent = '🌙';
-      modeToggle.title = 'Switch to Light Mode';
-      modeToggle.setAttribute('aria-label', 'Switch to Light Mode');
-    }
+const modeToggle = document.getElementById('modeToggle');
+
+// Load saved mode preference
+function loadModePreference() {
+  const storedMode = localStorage.getItem('darkMode');
+  // If no stored preference, default to dark
+  if (storedMode === null) {
+    document.body.classList.remove('light');
+    localStorage.setItem('darkMode', 'true');
+  } else {
+    document.body.classList.toggle('light', storedMode === 'false');
   }
-  modeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    updateModeIcon();
-  });
   updateModeIcon();
+}
+
+function updateModeIcon() {
+  if(document.body.classList.contains('light')) {
+    modeToggle.textContent = '☀️';
+    modeToggle.title = 'Switch to Dark Mode';
+    modeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
+  } else {
+    modeToggle.textContent = '🌙';
+    modeToggle.title = 'Switch to Light Mode';
+    modeToggle.setAttribute('aria-label', 'Switch to Light Mode');
+  }
+}
+
+modeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  // Save mode preference
+  localStorage.setItem('darkMode', !document.body.classList.contains('light'));
+  updateModeIcon();
+});
 
   // Bind inputs and checkboxes to update UI dynamically
   const inputs = [baseColor, spikeStyle, chainStyle, smallChainColorPattern,
@@ -1840,6 +1884,7 @@ html {
   });
 
   window.addEventListener('DOMContentLoaded', () => {
+    
     // Check if mobile
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         document.getElementById('mobilePopup').style.display = 'block';
@@ -1854,6 +1899,7 @@ html {
     updateChunkyChainControls();
     updatePendantControls();
     updatePreviewAndValidation();
+    loadModePreference();
     // Set initial format and button text
     exportFormatBtn.dataset.format = "png";
     exportBtn.textContent = "Export as PNG";
