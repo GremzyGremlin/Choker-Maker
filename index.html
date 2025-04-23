@@ -80,14 +80,14 @@
     --dark-pendant: #444444;
 
     /* UI */
-    --container-bg-light: #f3f3f3bb; /* off-white transparent */
+    --container-bg-light: #e0d9cfbb; /* off-white transparent */
     --container-bg-dark: #1e1e1edd;
     --container-border-light: #999;
     --container-border-dark: #444;
 
     /* UI Colors */
-    --sakura-pink: #ffb7c5;
-    --sakura-pink-dark: #ff9eb1;
+    --sakura-pink: #ff8eb9;
+    --sakura-pink-dark: #ff6e89;
 
     /* Scrollbar Colors */
     --scrollbar-bg: rgba(255, 183, 197, 0.05);
@@ -393,11 +393,11 @@ html {
   #leatherBar {
     width: 100%;
     height: 100%;
-    border-radius: 0;
     box-sizing: border-box;
     position: relative;
     transition: background-color 0.3s, border-color 0.3s;
     border-radius: 4px;
+
   }
 
   #leatherBar.black-white-stitch {
@@ -1486,14 +1486,37 @@ html {
     
     // Get middle spike color based on pattern type
     const getMiddleColor = () => {
+      const lastLeft = leftPattern[leftPattern.length - 1];
+      const firstRight = rightPattern[0];
+      
       switch (spikeStyle.value) {
-        case 'Alternating Color':
-          return checkedColors[sideCount % checkedColors.length];
-        case '3 Color Reverse':
-          return checkedColors[0]; // Center point of reverse
-        case 'Full Color Reverse':
-          return checkedColors[0]; // Reset point for reverse
-        default:
+        case 'Alternating Color': {
+          // If we have at least 2 colors, prevent 3 in a row
+          if (checkedColors.length >= 2) {
+            if (lastLeft === firstRight) {
+              // Find a different color than the adjacent ones
+              return checkedColors.find(c => c !== lastLeft) || checkedColors[0];
+            }
+            // Continue the alternation if sides are different
+            return checkedColors[(sideCount + 1) % checkedColors.length];
+          }
+          return checkedColors[0];
+        }
+        case '3 Color Reverse': {
+          // Use next color in sequence if available
+          const seq3 = [0, 1, 2, 1, 0, 2];
+          const nextIndex = seq3[sideCount % seq3.length];
+          return checkedColors[nextIndex] || checkedColors[0];
+        }
+        case 'Full Color Reverse': {
+          // For full reverse, use color that maintains symmetry
+          const n = checkedColors.length;
+          if (n >= 2) {
+            return checkedColors[Math.floor(n / 2)];
+          }
+          return checkedColors[0];
+        }
+        default: // Solid Color
           return checkedColors[0];
       }
     };
@@ -1827,9 +1850,13 @@ html {
     loadSavedDesigns();
   });
 
-  function dismissMobilePopup() {
-    document.getElementById('mobilePopup').style.display = 'none';
-  }
+  // Move dismissMobilePopup inside IIFE and make it global
+  window.dismissMobilePopup = function() {
+    const popup = document.getElementById('mobilePopup');
+    if (popup) {
+      popup.style.display = 'none';
+    }
+  };
 
   // Add tooltip handling functions after other variable declarations
   let tooltip = null;
@@ -1865,7 +1892,7 @@ html {
 </script>
 <div id="mobilePopup" class="mobile-popup">
     <p>For best experience, please enable desktop site. Thank you.</p>
-    <button onclick="dismissMobilePopup()">OK</button>
+    <button onclick="window.dismissMobilePopup()">OK</button>
 </div>
 </body>
 </html>
