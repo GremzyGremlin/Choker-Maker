@@ -84,7 +84,53 @@
     --container-bg-dark: #1e1e1edd;
     --container-border-light: #999;
     --container-border-dark: #444;
+
+    /* UI Colors */
+    --sakura-pink: #ffb7c5;
+    --sakura-pink-dark: #ff9eb1;
+
+    /* Scrollbar Colors */
+    --scrollbar-bg: rgba(255, 183, 197, 0.05);
+    --scrollbar-thumb: var(--sakura-pink);
   }
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-bg);
+  border-radius: 10px;
+  margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sakura-pink);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-clip: padding-box;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sakura-pink-dark);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  background-clip: padding-box;
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sakura-pink) var(--scrollbar-bg);
+}
+
+/* Firefox - more specific styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sakura-pink) var(--scrollbar-bg);
+}
 
   html, body {
     height: 100%;
@@ -117,7 +163,7 @@
 
   #modeToggle {
     position: absolute;
-    top: 1rem;
+    top: 3rem;
     left: -4rem;
     font-size: 1.8rem;
     background: none;
@@ -152,7 +198,7 @@
   
   #modeToggle:focus-visible {
     outline-offset: 2px;
-    outline: 2px solid #2196f3;
+    outline: 2px solid var(--sakura-pink);
     border-radius: 4px;
   }
 
@@ -223,7 +269,7 @@
   select:focus,
   select:focus-visible {
     outline: none;
-    border-color: #2196f3;
+    border-color: var(--sakura-pink);
     background-color: var(--select-focus-bg, #222);
   }
 
@@ -250,16 +296,16 @@
   button {
     font-weight: 700;
     cursor: pointer;
-    border: 2px solid #2196f3;
-    background-color: #2196f3;
-    color: white;
+    border: 2px solid var(--sakura-pink);
+    background-color: var(--sakura-pink);
+    color: #333;
     transition: background-color 0.3s, border-color 0.3s;
   }
 
   button:hover:not(:disabled),
   button:focus-visible:not(:disabled) {
-    background-color: #1976d2;
-    border-color: #1976d2;
+    background-color: var(--sakura-pink-dark);
+    border-color: var(--sakura-pink-dark);
   }
 
   #exportBtn:disabled {
@@ -302,7 +348,7 @@
 
   .checkbox-group label:hover,
   .checkbox-group label:focus-within {
-    border-color: #2196f3;
+    border-color: var(--sakura-pink);
     background-color: var(--bg-check-hover, #333);
   }
 
@@ -406,7 +452,7 @@
     bottom: 0;
     left: 11.5%;
     right: 11.5%;
-    pointer-events: none;
+    pointer-events: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -419,6 +465,8 @@
     border-radius: 0;
     outline: 2px solid rgba(48, 48, 48, 0.8);
     box-sizing: border-box;
+    cursor: default;
+    border: 1px solid rgba(0, 0, 0, 0.2);
   }
 
   #chainPendantContainer {
@@ -466,7 +514,8 @@
   }
 
   .pendant-star {
-    font-size: 4.25rem;
+    margin-top: 40px;
+    font-size: 5.25rem;
     user-select: none;
     font-weight: 900;
     color: #fff;
@@ -481,7 +530,7 @@
 
   .chain-link {
     border-radius: 50%;
-    border: 1px solid rgba(131,131,131,0.5);
+    border: 3px solid rgba(110, 110, 110, 0.15);
     box-sizing: border-box;
     cursor: default;
     transition: background-color 0.3s;
@@ -506,7 +555,7 @@
   select:focus-visible,
   input[type=checkbox]:focus-visible + span,
   label:focus-within {
-    outline: 2px solid #2196f3;
+    outline: 2px solid var(--sakura-pink);
     outline-offset: 2px;
   }
 
@@ -576,13 +625,13 @@
   }
 
   .format-dropdown button:hover {
-    background-color: rgba(33, 150, 243, 0.1);
+    background-color: rgba(255, 183, 197, 0.1);
   }
 
   select:focus,
   select:focus-visible {
     outline: none;
-    border-color: #2196f3;
+    border-color: var(--sakura-pink);
     background-color: var(--select-focus-bg, #222);
   }
 
@@ -651,6 +700,24 @@
     margin-top: 1rem;
     width: auto;
     min-width: 80px;
+  }
+
+  .color-tooltip {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 10000;
+    font-family: monospace;
+  }
+
+  body.light .color-tooltip {
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 </style>
 </head>
@@ -1442,10 +1509,14 @@
     fullPattern.forEach(color => {
       const spike = document.createElement('div');
       spike.className = 'spike';
-      spike.style.backgroundColor = getColor('spikes', color, '#888888');
+      const swatchColor = getSwatchColor(spikeColorsChecklist, color);
+      spike.style.backgroundColor = swatchColor || getColor('spikes', color, '#888888');
       if (spikeStyle.value === 'Full Color Reverse') {
         spike.style.outline = '2px solid rgba(100, 100, 100, 0.8)';
       }
+      spike.addEventListener('mouseover', (e) => showTooltip(color, e));
+      spike.addEventListener('mouseout', hideTooltip);
+      spike.addEventListener('mousemove', (e) => showTooltip(color, e));
       spikeOverlay.appendChild(spike);
     });
   }
@@ -1496,9 +1567,15 @@
       const star = document.createElement('span');
       star.className = 'pendant-star';
       star.textContent = '★';
-      const glowColor = glowStarColor.value ? getColor('glow-star', glowStarColor.value, '#ffffff') : '#ffffff';
-      star.style.color = glowColor;
-      star.style.textShadow = `0 0 3px ${glowColor}, 0 0 10px ${glowColor}, 0 0 0px ${glowColor}, 0 0 40px ${glowColor}`;
+      const glowColor = glowStarColor.value;
+      const displayColor = glowColor ? getColor('glow-star', glowColor, '#ffffff') : '#ffffff';
+      star.style.color = displayColor;
+      star.style.textShadow = `0 0 3px ${displayColor}, 0 0 10px ${displayColor}, 0 0 0px ${displayColor}, 0 0 40px ${displayColor}`;
+      if (glowColor) {
+        star.addEventListener('mouseover', (e) => showTooltip(glowColor, e));
+        star.addEventListener('mouseout', hideTooltip);
+        star.addEventListener('mousemove', (e) => showTooltip(glowColor, e));
+      }
       pendantDisplay.appendChild(star);
     } else {
       pendantGap.style.display = 'none';
@@ -1586,8 +1663,13 @@
     colors.forEach(color => {
       const link = document.createElement('div');
       link.classList.add('chain-link');
-      link.style.backgroundColor = getColor(section, color, "#777777");
+      const checklist = section === "small-chains" ? smallChainColorsChecklist : chunkyChainColorsChecklist;
+      const swatchColor = getSwatchColor(checklist, color);
+      link.style.backgroundColor = swatchColor || getColor(section, color, "#777777");
       link.classList.add(section === "small-chains" ? 'small' : 'chunky');
+      link.addEventListener('mouseover', (e) => showTooltip(color, e));
+      link.addEventListener('mouseout', hideTooltip);
+      link.addEventListener('mousemove', (e) => showTooltip(color, e));
       container.appendChild(link);
     });
     
@@ -1695,7 +1777,7 @@
   const modeToggle = document.getElementById('modeToggle');
   function updateModeIcon() {
     if(document.body.classList.contains('light')) {
-      modeToggle.textContent = '☀';
+      modeToggle.textContent = '☀️';
       modeToggle.title = 'Switch to Dark Mode';
       modeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
     } else {
@@ -1747,6 +1829,36 @@
 
   function dismissMobilePopup() {
     document.getElementById('mobilePopup').style.display = 'none';
+  }
+
+  // Add tooltip handling functions after other variable declarations
+  let tooltip = null;
+
+  function showTooltip(text, event) {
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.className = 'color-tooltip';
+      document.body.appendChild(tooltip);
+    }
+    tooltip.textContent = text;
+    tooltip.style.display = 'block';
+    tooltip.style.left = (event.clientX + 10) + 'px';
+    tooltip.style.top = (event.clientY + 10) + 'px';
+  }
+
+  function hideTooltip() {
+    if (tooltip) {
+      tooltip.style.display = 'none';
+    }
+  }
+
+  // Add helper function after colorMap definition
+  function getSwatchColor(container, colorName) {
+    const checkbox = container.querySelector(`input[value="${colorName}"]`);
+    if (!checkbox) return null;
+    const label = checkbox.closest('label');
+    if (!label) return null;
+    return getComputedStyle(label).getPropertyValue('--swatch-color').trim();
   }
 
 })();
