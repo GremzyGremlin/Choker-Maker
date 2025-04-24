@@ -915,10 +915,10 @@ html {
       <label for="pendantStyle" style="margin-top:1rem;">Pendant Style</label>
       <select id="pendantStyle" aria-label="Pendant Style" autocomplete="off">
         <option value="" disabled selected>-- Select Pendant Style --</option>
-        <option>None</option>
-        <option>O-Ring</option>
-        <option>Glow in the Dark Star</option>
-        <option>Other</option>
+        <option value="None">None</option>
+        <option value="O-Ring">O-Ring</option>
+        <option value="Glow in the Dark Star">Glow in the Dark Star</option>
+        <option value="Other">Other</option>
       </select>
 
       <label for="oRingColor" id="labelORingColor" style="display:none; margin-top:1rem;">O-Ring Color</label>
@@ -1438,71 +1438,125 @@ html {
   async function loadOrdersFromCSV() {
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbXUcpajGaza9RMnJ-5Vw4LRv_EhcCh6BNwjCndjCKBL2biwRL0CViS6ut9RZk0BOWJz4PrhlQKdVm/pub?output=csv';
     try {
-      const response = await fetch(csvUrl);
-      if(!response.ok) throw new Error('Fetching CSV failed');
-      const csvText = await response.text();
-      const lines = csvText.trim().split('\n');
-      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-      const idx = colName => headers.findIndex(h => h.includes(colName));
-      const orderData = {};
-      const orderEntries = [];
-      for(let i=1; i<lines.length; i++) {
-        if(!lines[i]) continue;
-        let cols = [];
-        let inQuotes = false, cur = '';
-        for(let c of lines[i]) {
-          if(c === '"') inQuotes = !inQuotes;
-          else if(c === ',' && !inQuotes) {
-            cols.push(cur);
-            cur = '';
-          } else cur += c;
-        }
-        cols.push(cur);
-        cols = cols.map(s => s.trim().replace(/^"(.*)"$/,'$1'));
-        const timestamp = cols[idx('timestamp')] || `Order ${i}`;
-        const order = {
-          timestamp,
-          baseColor: cols[idx('base color')] || '',
-          spikeStyle: cols[idx('spike style')] || '',
-          spikeColors: cols[idx('spike colors')] || '',
-          chainStyle: cols[idx('chain style')] || '',
-          smallChainPattern: cols[idx('small chain color pattern')] || '',
-          smallChainColors: cols[idx('small chain colors')] || '',
-          chunkyChainPattern: cols[idx('chunky chain color pattern')] || '',
-          chunkyChainColors: cols[idx('chunky chain colors')] || '',
-          pendantStyle: cols[idx('pendant style')] || '',
-          oRingColor: cols[idx('o-ring color')] || '',
-          oRingSize: cols[idx('o-ring size')] || '',
-          glowStarColor: (() => {
-  const possibleHeaders = [
-    'glow in the dark star color',
-    'glowinthedarkstarcolor',
-    'glow star color', // fallback
-    'glowstarcolor'
-  ];
-  for (const h of possibleHeaders) {
-    const i = headers.findIndex(x => x.includes(h));
-    if (i !== -1) return cols[i] || '';
-  }
-  return '';
-})(),
+        const response = await fetch(csvUrl);
+        if(!response.ok) throw new Error('Fetching CSV failed');
+        const csvText = await response.text();
+        
+        // Split into lines and remove empty lines
+        const lines = csvText.split('\n').filter(line => line.trim());
+        
+        // Parse headers more reliably by normalizing them
+        const headers = lines[0].split(',').map(h => 
+            h.trim()
+             .toLowerCase()
+             .replace(/[^a-z0-9]/g, '') // Remove special characters
+        );
+        
+        // Helper to find column index with fallbacks
+        const findColumn = (variants) => {
+            for (const v of variants) {
+                const idx = headers.findIndex(h => h.includes(v));
+                if (idx !== -1) return idx;
+            }
+            return -1;
         };
-        orderEntries.push(order);
-      }
-      orderEntries.sort((a,b) => b.timestamp.localeCompare(a.timestamp));
-      let htmlOptions = `<option value="">-- Select Previous Order --</option>`;
-      orderEntries.forEach(order => {
-        htmlOptions += `<option value="${order.timestamp}">${order.timestamp}</option>`;
-        orderData[order.timestamp] = order;
-      });
-      orderSelector.innerHTML = htmlOptions;
-      orderSelector._orderData = orderData;
+
+        // Define column indices with fallbacks
+        const columns = {
+            timestamp: findColumn(['timestamp', 'datetime']),
+            baseColor: findColumn(['basecolor', 'leathercolor']),
+            spikeStyle: findColumn(['spikestyle', 'spikes']),
+            spikeColors: findColumn(['spikecolors', 'spikecolor']),
+            chainStyle: findColumn(['chainstyle', 'chains']),
+            smallChainPattern: findColumn(['smallchaincolorpattern', 'smallchainpattern']),
+            smallChainColors: findColumn(['smallchaincolors', 'smallchaincolor']),
+            chunkyChainPattern: findColumn(['chunkychaincolorpattern', 'chunkychainpattern']),
+            chunkyChainColors: findColumn(['chunkychaincolors', 'chunkychaincolor']),
+            pendantStyle: findColumn(['pendantstyle', 'pendant']),
+            oRingColor: findColumn(['oringcolor', 'ringcolor']),
+            oRingSize: findColumn(['oringsize', 'ringsize']),
+            glowStarColor: findColumn(['glowstarcolor', 'starcolor', 'glowinthedarkstarcolor'])
+        };
+
+        // Parse data rows
+        const orderEntries = [];
+        for(let i = 1; i < lines.length; i++) {
+            // Split line handling quoted values
+            const cols = lines[i].split(',').map(col => 
+                col.trim().replace(/^"(.*)"$/, '$1') // Remove quotes
+            );
+            
+            // Skip if we don't have enough columns
+            if (cols.length < Math.max(...Object.values(columns))) continue;
+
+            const getCol = (key) => {
+                const idx = columns[key];
+                return idx >= 0 ? cols[idx] : '';
+            };
+
+            const order = {
+                timestamp: getCol('timestamp') || `Order ${i}`,
+                baseColor: getCol('baseColor'),
+                spikeStyle: getCol('spikeStyle'),
+                spikeColors: getCol('spikeColors'),
+                chainStyle: getCol('chainStyle'),
+                smallChainPattern: getCol('smallChainPattern'),
+                smallChainColors: getCol('smallChainColors'),
+                chunkyChainPattern: getCol('chunkyChainPattern'),
+                chunkyChainColors: getCol('chunkyChainColors'),
+                pendantStyle: getCol('pendantStyle'),
+                oRingColor: getCol('oRingColor'),
+                oRingSize: getCol('oRingSize'),
+                glowStarColor: getCol('glowStarColor')
+            };
+
+            // Only add orders that have at least one value besides timestamp
+            if (Object.values(order).slice(1).some(v => v)) {
+                orderEntries.push(order);
+            }
+        }
+
+        // Sort by timestamp descending
+        orderEntries.sort((a, b) => {
+            // Parse timestamps into Date objects
+            const parseTimestamp = (ts) => {
+                // Handle common date formats MM/DD/YYYY HH:mm
+                const match = ts.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s*(\d{1,2})?:?(\d{1,2})?/);
+                if (match) {
+                    const [_, month, day, year, hour = '0', minute = '0'] = match;
+                    return new Date(year, month - 1, day, hour, minute);
+                }
+                return new Date(ts); // Fallback to standard parsing
+            };
+
+            const dateA = parseTimestamp(a.timestamp);
+            const dateB = parseTimestamp(b.timestamp);
+
+            // Valid dates sort by date/time
+            if (!isNaN(dateA) && !isNaN(dateB)) {
+                return dateB - dateA;
+            }
+            // Fallback to string comparison if parsing fails
+            return b.timestamp.localeCompare(a.timestamp);
+        });
+
+        // Update dropdown
+        orderSelector.innerHTML = '<option value="">-- Select Previous Order --</option>' +
+            orderEntries.map(order => 
+                `<option value="${order.timestamp}">${order.timestamp}</option>`
+            ).join('');
+
+        // Store order data
+        orderSelector._orderData = Object.fromEntries(
+            orderEntries.map(order => [order.timestamp, order])
+        );
+
     } catch(e) {
-      console.warn('CSV load error:', e);
-      orderSelector.innerHTML = `<option value="">No orders available</option>`;
-      orderSelector._orderData = {};
+        console.warn('CSV load error:', e);
+        orderSelector.innerHTML = '<option value="">No orders available</option>';
+        orderSelector._orderData = {};
     }
-  }
+}
 
   orderSelector.addEventListener('change', () => {
     const ts = orderSelector.value;
