@@ -90,7 +90,7 @@
     --dark-pendant: #444444;
 
     /* UI */
-    --container-bg-light: #e0d9cfbb; /* off-white transparent */
+    --container-bg-light: #f8efe8bb; /* off-white transparent */
     --container-bg-dark: #1e1e1edd;
     --container-border-light: #999;
     --container-border-dark: #444;
@@ -126,6 +126,8 @@
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
+  position: absolute;
+  right: 0;
 }
 
 ::-webkit-scrollbar-track {
@@ -367,6 +369,10 @@ html {
     font-size: 0.8rem;
     overflow-y: visible;
     max-height: none;
+    width: 100%;
+    margin-right: 0;
+    padding-right: 0;
+    box-sizing: border-box;
   }
 
   .checkbox-group label {
@@ -918,10 +924,7 @@ html {
   }
 
   /* Update options container */
-  .options-container {
-    overflow-y: auto;
-    padding-right: 1rem;
-  }
+
 
   /* Ensure checkboxes stay visible */
   .checkbox-group {
@@ -937,7 +940,7 @@ html {
     overflow-y: auto;
     background-color: var(--container-bg-dark);
     border-radius: 12px;
-    padding: 1rem 2.5rem 1.5rem 2.5rem;
+    padding: 1rem 1.5rem 1.5rem 2.5rem;
     box-sizing: border-box;
     border: 2px solid var(--container-border-dark);
     display: flex;
@@ -945,6 +948,7 @@ html {
     align-items: center;
     transition: background-color 0.3s, border-color 0.3s;
     margin-top: 1.75rem;
+    position: relative;
   }
 
   /* Update preview container */
