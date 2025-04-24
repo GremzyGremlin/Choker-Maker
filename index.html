@@ -173,9 +173,10 @@ html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1rem;
+    padding: 0.5rem; /* Reduce overall padding */
     transition: background-color 0.3s, color 0.3s;
     min-height: 100vh;
+    gap: 0; /* Remove gap between major sections */
   }
 
   body.light {
@@ -187,6 +188,8 @@ html {
     position: relative;
     max-width: 800px;
     width: 100%;
+    gap: 0; /* Ensure no gap between containers */
+    padding: 0;
   }
 
   #modeToggle {
@@ -210,18 +213,18 @@ html {
   .container {
     max-width: 800px;
     width: 100%;
-    max-height: 55vh;
+    max-height: calc(100vh - 80px); /* Reduce spacing from 130px */
     overflow-y: auto;
     background-color: var(--container-bg-dark);
     border-radius: 12px;
-    padding: 1rem 2.5rem 1.5rem 2.5rem;
+    padding: 0.5rem 2.5rem;  /* Reduce top/bottom padding */
     box-sizing: border-box;
     border: 2px solid var(--container-border-dark);
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: background-color 0.3s, border-color 0.3s;
-    margin-top: 1.75rem;
+    margin: 0;
   }
   
   #modeToggle:focus-visible {
@@ -238,15 +241,16 @@ html {
   .options-container {
     width: 100%;
     max-width: 400px;
+    margin-bottom: 0; /* Remove bottom spacing */
   }
 
   .preview-container {
     max-width: 800px;
     width: 100%;
-    max-height: 40vh;
+    max-height: 30vh; /* Reduce from 40vh to tighten gap */
     background-color: var(--container-bg-dark);
     border-radius: 12px;
-    padding: 1rem 2rem 2.75rem 2rem;
+    padding: 0.5rem 2rem 1rem 2rem; /* Reduce padding */
     border: 2px solid var(--container-border-dark);
     box-sizing: border-box;
     user-select: none;
@@ -255,7 +259,8 @@ html {
     flex-direction: column;
     justify-content: center;
     overflow: visible; /* Change from hidden to visible */
-    margin-bottom: 1rem;
+    margin-top: 0; /* Remove top gap */
+    margin-bottom: 0; /* Remove bottom gap */
     position: relative;
   }
 
@@ -267,6 +272,13 @@ html {
   /* Hide preview heading label */
   .preview-container > h2 {
     display: none;
+  }
+
+  .saved-designs-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0; /* Remove all margins */
+    padding: 0.5rem; /* Add small padding */
   }
 
   label {
@@ -353,6 +365,8 @@ html {
     justify-items: start;
     font-family: monospace;
     font-size: 0.8rem;
+    overflow-y: visible;
+    max-height: none;
   }
 
   .checkbox-group label {
@@ -635,21 +649,20 @@ html {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: var(--container-bg-dark);
+    background-color: #2a2a2a;
     border: 1px solid var(--container-border-dark);
     border-radius: 4px;
     z-index: 1000;
     width: auto;
     min-width: 100px;
-  }
-
-  body.light .format-dropdown {
-    background-color: var(--container-bg-light);
-    border-color: var(--container-border-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-top: 2px; /* Add spacing from button */
   }
 
   .format-dropdown.show {
     display: block;
+    opacity: 1;
+    visibility: visible;
   }
 
   .format-dropdown button {
@@ -660,10 +673,44 @@ html {
     background: none;
     cursor: pointer;
     border-radius: 0;
+    color: #ffffff;
+    transition: background-color 0.2s, color 0.2s;
+    display: block; /* Ensure buttons are block elements */
+  }
+
+  body.light .format-dropdown {
+    background-color: #ffffff;
+    border-color: var(--container-border-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .format-dropdown button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 0;
+    color: #ffffff;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  body.light .format-dropdown button {
+    color: #333333;
   }
 
   .format-dropdown button:hover {
-    background-color: rgba(255, 183, 197, 0.1);
+    background-color: var(--sakura-pink);
+    color: #333333;
+  }
+
+  .format-dropdown button:first-child {
+    border-radius: 4px 4px 0 0;
+  }
+
+  .format-dropdown button:last-child {
+    border-radius: 0 0 4px 4px;
   }
 
   select:focus,
@@ -673,27 +720,21 @@ html {
     background-color: var(--select-focus-bg, #222);
   }
 
-  .saved-designs-container {
-    margin-top: 1rem;
-    width: 100%;
-    max-width: 800px;
-    margin: 1rem auto;
-    text-align: center;
-    
-  }
+
 
   .saved-designs-actions {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
-    margin: 0.5rem 0;
+    margin: 0;
+    padding: 0;
   }
 
   .saved-designs-controls {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-top: 0.5rem;
+    gap: 0.5rem;
+    margin: 0.25rem 0 0;
   }
 
   #savedDesignSelector {
@@ -833,6 +874,108 @@ html {
     opacity: 1;
     visibility: visible;
   }
+
+  /* Update HTML and body styles */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    max-height: 100%;
+    gap: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  /* Update container styles */
+  .container {
+    max-height: 60%;
+    overflow-y: auto;
+  }
+
+  .preview-container {
+    max-height: 35vh;
+    overflow: visible;
+    margin-top: 0.5rem;
+  }
+
+
+  /* Add container spacing */
+  .container-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Update options container */
+  .options-container {
+    overflow-y: auto;
+    padding-right: 1rem;
+  }
+
+  /* Ensure checkboxes stay visible */
+  .checkbox-group {
+    overflow-y: auto;
+    max-height: 100%;
+  }
+
+  /* Update root container styles */
+  .container {
+    max-width: 800px;
+    width: 100%;
+    max-height: 55vh;
+    overflow-y: auto;
+    background-color: var(--container-bg-dark);
+    border-radius: 12px;
+    padding: 1rem 2.5rem 1.5rem 2.5rem;
+    box-sizing: border-box;
+    border: 2px solid var(--container-border-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background-color 0.3s, border-color 0.3s;
+    margin-top: 1.75rem;
+  }
+
+  /* Update preview container */
+  .preview-container {
+    max-height: 40vh;
+    padding: 1rem 2rem 2.75rem 2rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Update saved designs container */
+  .saved-designs-container {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 1rem auto;
+    text-align: center;
+  }
+
+  .saved-designs-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .saved-designs-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
 </style>
 </head>
 <body>
@@ -915,10 +1058,10 @@ html {
       <label for="pendantStyle" style="margin-top:1rem;">Pendant Style</label>
       <select id="pendantStyle" aria-label="Pendant Style" autocomplete="off">
         <option value="" disabled selected>-- Select Pendant Style --</option>
-        <option value="None">None</option>
-        <option value="O-Ring">O-Ring</option>
-        <option value="Glow in the Dark Star">Glow in the Dark Star</option>
-        <option value="Other">Other</option>
+        <option>None</option>
+        <option>O-Ring</option>
+        <option>Glow in the Dark Star</option>
+        <option>Other</option>
       </select>
 
       <label for="oRingColor" id="labelORingColor" style="display:none; margin-top:1rem;">O-Ring Color</label>
@@ -955,16 +1098,14 @@ html {
   </div>
 </div>
 
+
 <div class="saved-designs-container">
-  <div class="saved-designs-header">
-    <p>Saved Designs</p>
-    <div class="saved-designs-actions">
-      <button id="saveDesign">Save Current</button>
-      <input type="file" id="importInput" accept=".json">
-      <button id="importDesign" onclick="document.getElementById('importInput').click()">Import</button>
-      <button id="exportDesign">Export</button>
-      <button id="deleteDesign" class="delete-button" disabled>Delete</button>
-    </div>
+  <div class="saved-designs-actions">
+    <button id="saveDesign">Save Current</button>
+    <input type="file" id="importInput" accept=".json">
+    <button id="importDesign" onclick="document.getElementById('importInput').click()">Import .json</button>
+    <button id="exportDesign">Export .json</button>
+    <button id="deleteDesign" class="delete-button" disabled>Delete</button>
   </div>
   <div class="saved-designs-controls">
     <select id="savedDesignSelector">
@@ -995,9 +1136,9 @@ html {
     <div id="chainRight" class="chain-segment" role="list" aria-label="Right side chain"></div>
   </div>
   <div class="reset-buttons">
-    <span></span>
     <div>
       <button class="reset-btn" id="resetColorsBtn" aria-label="Reset color order">🎨</button>
+   
     </div>
   </div>
 </section>
@@ -1438,125 +1579,99 @@ html {
   async function loadOrdersFromCSV() {
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbXUcpajGaza9RMnJ-5Vw4LRv_EhcCh6BNwjCndjCKBL2biwRL0CViS6ut9RZk0BOWJz4PrhlQKdVm/pub?output=csv';
     try {
-        const response = await fetch(csvUrl);
-        if(!response.ok) throw new Error('Fetching CSV failed');
-        const csvText = await response.text();
-        
-        // Split into lines and remove empty lines
-        const lines = csvText.split('\n').filter(line => line.trim());
-        
-        // Parse headers more reliably by normalizing them
-        const headers = lines[0].split(',').map(h => 
-            h.trim()
-             .toLowerCase()
-             .replace(/[^a-z0-9]/g, '') // Remove special characters
-        );
-        
-        // Helper to find column index with fallbacks
-        const findColumn = (variants) => {
-            for (const v of variants) {
-                const idx = headers.findIndex(h => h.includes(v));
-                if (idx !== -1) return idx;
-            }
-            return -1;
-        };
+      const response = await fetch(csvUrl);
+      if(!response.ok) throw new Error('Fetching CSV failed');
+      const csvText = await response.text();
+      const lines = csvText.trim().split('\n');
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+      
+      // Helper to find column index
+      const idx = colName => headers.findIndex(h => h.includes(colName));
+      const orderData = {};
+      const orderEntries = [];
 
-        // Define column indices with fallbacks
-        const columns = {
-            timestamp: findColumn(['timestamp', 'datetime']),
-            baseColor: findColumn(['basecolor', 'leathercolor']),
-            spikeStyle: findColumn(['spikestyle', 'spikes']),
-            spikeColors: findColumn(['spikecolors', 'spikecolor']),
-            chainStyle: findColumn(['chainstyle', 'chains']),
-            smallChainPattern: findColumn(['smallchaincolorpattern', 'smallchainpattern']),
-            smallChainColors: findColumn(['smallchaincolors', 'smallchaincolor']),
-            chunkyChainPattern: findColumn(['chunkychaincolorpattern', 'chunkychainpattern']),
-            chunkyChainColors: findColumn(['chunkychaincolors', 'chunkychaincolor']),
-            pendantStyle: findColumn(['pendantstyle', 'pendant']),
-            oRingColor: findColumn(['oringcolor', 'ringcolor']),
-            oRingSize: findColumn(['oringsize', 'ringsize']),
-            glowStarColor: findColumn(['glowstarcolor', 'starcolor', 'glowinthedarkstarcolor'])
-        };
+      // Helper to parse dates consistently
+      const parseDateTime = (str) => {
+        // Try parsing different date formats
+        const formats = [
+          // MM/DD/YYYY HH:mm:ss
+          /(\d{1,2})\/(\d{1,2})\/(\d{4})\s*(\d{1,2}):(\d{1,2}):?(\d{1,2})?/,
+          // MM/DD/YYYY HH:mm
+          /(\d{1,2})\/(\d{1,2})\/(\d{4})\s*(\d{1,2}):(\d{1,2})/,
+          // MM/DD/YYYY
+          /(\d{1,2})\/(\d{1,2})\/(\d{4})/
+        ];
 
-        // Parse data rows
-        const orderEntries = [];
-        for(let i = 1; i < lines.length; i++) {
-            // Split line handling quoted values
-            const cols = lines[i].split(',').map(col => 
-                col.trim().replace(/^"(.*)"$/, '$1') // Remove quotes
-            );
-            
-            // Skip if we don't have enough columns
-            if (cols.length < Math.max(...Object.values(columns))) continue;
-
-            const getCol = (key) => {
-                const idx = columns[key];
-                return idx >= 0 ? cols[idx] : '';
-            };
-
-            const order = {
-                timestamp: getCol('timestamp') || `Order ${i}`,
-                baseColor: getCol('baseColor'),
-                spikeStyle: getCol('spikeStyle'),
-                spikeColors: getCol('spikeColors'),
-                chainStyle: getCol('chainStyle'),
-                smallChainPattern: getCol('smallChainPattern'),
-                smallChainColors: getCol('smallChainColors'),
-                chunkyChainPattern: getCol('chunkyChainPattern'),
-                chunkyChainColors: getCol('chunkyChainColors'),
-                pendantStyle: getCol('pendantStyle'),
-                oRingColor: getCol('oRingColor'),
-                oRingSize: getCol('oRingSize'),
-                glowStarColor: getCol('glowStarColor')
-            };
-
-            // Only add orders that have at least one value besides timestamp
-            if (Object.values(order).slice(1).some(v => v)) {
-                orderEntries.push(order);
-            }
+        for (const format of formats) {
+          const match = str.match(format);
+          if (match) {
+            const [_, month, day, year, hour = '0', minute = '0', second = '0'] = match;
+            return new Date(year, month - 1, day, hour, minute, second);
+          }
         }
+        return new Date(str); // Fallback to native parsing
+      };
 
-        // Sort by timestamp descending
-        orderEntries.sort((a, b) => {
-            // Parse timestamps into Date objects
-            const parseTimestamp = (ts) => {
-                // Handle common date formats MM/DD/YYYY HH:mm
-                const match = ts.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s*(\d{1,2})?:?(\d{1,2})?/);
-                if (match) {
-                    const [_, month, day, year, hour = '0', minute = '0'] = match;
-                    return new Date(year, month - 1, day, hour, minute);
-                }
-                return new Date(ts); // Fallback to standard parsing
-            };
+      for(let i=1; i<lines.length; i++) {
+        if(!lines[i].trim()) continue;
+        let cols = [];
+        let inQuotes = false, cur = '';
+        
+        // Parse CSV while respecting quoted fields
+        for(let c of lines[i]) {
+          if(c === '"') inQuotes = !inQuotes;
+          else if(c === ',' && !inQuotes) {
+            cols.push(cur);
+            cur = '';
+          } else cur += c;
+        }
+        cols.push(cur);
+        cols = cols.map(s => s.trim().replace(/^"(.*)"$/,'$1'));
 
-            const dateA = parseTimestamp(a.timestamp);
-            const dateB = parseTimestamp(b.timestamp);
+        const timestamp = cols[idx('timestamp')] || `Order ${i}`;
+        const parsedDate = parseDateTime(timestamp);
+        
+        // Only add if we got a valid date
+        if (!isNaN(parsedDate.getTime())) {
+          const order = {
+            timestamp,
+            parsedDate, // Store parsed date for sorting
+            baseColor: cols[idx('base color')] || '',
+            spikeStyle: cols[idx('spike style')] || '',
+            spikeColors: cols[idx('spike colors')] || '',
+            chainStyle: cols[idx('chain style')] || '',
+            smallChainPattern: cols[idx('small chain color pattern')] || '',
+            smallChainColors: cols[idx('small chain colors')] || '',
+            chunkyChainPattern: cols[idx('chunky chain color pattern')] || '',
+            chunkyChainColors: cols[idx('chunky chain colors')] || '',
+            pendantStyle: cols[idx('pendant style')] || '',
+            oRingColor: cols[idx('o-ring color')] || '',
+            oRingSize: cols[idx('o-ring size')] || '',
+            glowStarColor: cols[idx('glow in the dark star color')] || ''
+          };
+          orderEntries.push(order);
+        }
+      }
 
-            // Valid dates sort by date/time
-            if (!isNaN(dateA) && !isNaN(dateB)) {
-                return dateB - dateA;
-            }
-            // Fallback to string comparison if parsing fails
-            return b.timestamp.localeCompare(a.timestamp);
-        });
+      // Sort by parsed date, most recent first
+      orderEntries.sort((a, b) => b.parsedDate - a.parsedDate);
 
-        // Update dropdown
-        orderSelector.innerHTML = '<option value="">-- Select Previous Order --</option>' +
-            orderEntries.map(order => 
-                `<option value="${order.timestamp}">${order.timestamp}</option>`
-            ).join('');
+      // Generate dropdown options
+      let htmlOptions = `<option value="">-- Select Previous Order --</option>`;
+      orderEntries.forEach(order => {
+        htmlOptions += `<option value="${order.timestamp}">${order.timestamp}</option>`;
+        orderData[order.timestamp] = order;
+      });
 
-        // Store order data
-        orderSelector._orderData = Object.fromEntries(
-            orderEntries.map(order => [order.timestamp, order])
-        );
+      orderSelector.innerHTML = htmlOptions;
+      orderSelector._orderData = orderData;
 
     } catch(e) {
-        console.warn('CSV load error:', e);
-        orderSelector.innerHTML = '<option value="">No orders available</option>';
-        orderSelector._orderData = {};
+      console.warn('CSV load error:', e);
+      orderSelector.innerHTML = `<option value="">No orders available</option>`;
+      orderSelector._orderData = {};
     }
-}
+  }
 
   orderSelector.addEventListener('change', () => {
     const ts = orderSelector.value;
@@ -1933,11 +2048,27 @@ html {
     exportBtn.disabled = true;
     exportBtn.textContent = `Exporting ${format.toUpperCase()}...`;
     try {
-      const canvas = await html2canvas($("preview"), {
+      // Clone preview container to modify for export
+      const exportPreview = $("preview").cloneNode(true);
+      exportPreview.style.backgroundColor = 'rgba(128, 128, 128, 0.1)';
+      exportPreview.style.padding = '2rem';
+      
+      // Remove reset buttons from clone
+      const resetBtns = exportPreview.querySelector('.reset-buttons');
+      if (resetBtns) resetBtns.remove();
+
+      // Temporarily add clone to body for rendering
+      document.body.appendChild(exportPreview);
+
+      const canvas = await html2canvas(exportPreview, {
         backgroundColor: null,
         scale: 2,
         scrollY: -window.scrollY,
       });
+
+      // Remove temporary preview
+      document.body.removeChild(exportPreview);
+
       canvas.toBlob((blob) => {
         if (!blob) {
           alert("Export failed: could not create image blob.");
@@ -1963,9 +2094,8 @@ html {
     }
   });
 
-  exportFormatBtn.addEventListener("click", () => {
-    const isExpanded = exportFormatBtn.getAttribute("aria-expanded") === "true";
-    exportFormatBtn.setAttribute("aria-expanded", !isExpanded);
+  exportFormatBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
     formatDropdown.classList.toggle("show");
   });
 
@@ -1974,17 +2104,13 @@ html {
       const format = e.target.dataset.format;
       exportFormatBtn.dataset.format = format;
       exportBtn.textContent = `Export as ${format.toUpperCase()}`;
-      exportFormatBtn.setAttribute("aria-expanded", false);
       formatDropdown.classList.remove("show");
+      e.stopPropagation();
     }
   });
 
-  // Add click outside listener to close dropdown
-  document.addEventListener("click", (e) => {
-    if (!exportFormatBtn.contains(e.target) && !formatDropdown.contains(e.target)) {
-      exportFormatBtn.setAttribute("aria-expanded", false);
-      formatDropdown.classList.remove("show");
-    }
+  document.addEventListener("click", () => {
+    formatDropdown.classList.remove("show");
   });
 
   // Move mode toggle code inside main closure
@@ -2181,79 +2307,43 @@ html {
   }
 
   const resetColorsBtn = $('resetColorsBtn');
-  const resetAllBtn = $('resetAllBtn');
 
-  // Set tooltips
   resetColorsBtn.setAttribute('data-tooltip', 'Reset color order');
-  resetAllBtn.setAttribute('data-tooltip', 'Reset all options');
 
   resetColorsBtn.addEventListener('click', () => {
-    // Store checked states
-    const checkedStates = {
-      spikes: [...spikeColorsChecklist.querySelectorAll('input[type=checkbox]')]
-        .map(cb => ({value: cb.value, checked: cb.checked})),
-      small: [...smallChainColorsChecklist.querySelectorAll('input[type=checkbox]')]
-        .map(cb => ({value: cb.value, checked: cb.checked})),
-      chunky: [...chunkyChainColorsChecklist.querySelectorAll('input[type=checkbox]')]
-        .map(cb => ({value: cb.value, checked: cb.checked}))
-    };
+    // Store currently checked colors
+    const checkedSpikes = [...spikeColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value);
+    const checkedSmall = [...smallChainColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value);
+    const checkedChunky = [...chunkyChainColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value);
+
+    // Clear and repopulate lists in original order
+    spikeColorsChecklist.innerHTML = '';
+    smallChainColorsChecklist.innerHTML = '';
+    chunkyChainColorsChecklist.innerHTML = '';
     
-    // Reset color order
     populateChecklist(spikeColorsChecklist, spikeColors);
     populateChecklist(smallChainColorsChecklist, chainColorsSmall);
     populateChecklist(chunkyChainColorsChecklist, chainColorsChunky);
-    
+
     // Restore checked states
-    checkedStates.spikes.forEach(({value, checked}) => {
-      const cb = spikeColorsChecklist.querySelector(`input[value="${value}"]`);
-      if (cb) cb.checked = checked;
+    checkedSpikes.forEach(color => {
+      const cb = spikeColorsChecklist.querySelector(`input[value="${color}"]`);
+      if (cb) cb.checked = true;
     });
-    checkedStates.small.forEach(({value, checked}) => {
-      const cb = smallChainColorsChecklist.querySelector(`input[value="${value}"]`);
-      if (cb) cb.checked = checked;
+
+    checkedSmall.forEach(color => {
+      const cb = smallChainColorsChecklist.querySelector(`input[value="${color}"]`);
+      if (cb) cb.checked = true;
     });
-    checkedStates.chunky.forEach(({value, checked}) => {
-      const cb = chunkyChainColorsChecklist.querySelector(`input[value="${value}"]`);
-      if (cb) cb.checked = checked;
+
+    checkedChunky.forEach(color => {
+      const cb = chunkyChainColorsChecklist.querySelector(`input[value="${color}"]`);
+      if (cb) cb.checked = true;
     });
-    
+
     updatePreviewAndValidation();
   });
 
-  resetAllBtn.addEventListener('click', () => {
-    if (!confirm('Reset all options to default?')) return;
-    
-    // Set specific default values
-    baseColor.value = 'Black with White Stitching';
-    spikeStyle.value = 'Alternating Color';
-    chainStyle.value = 'Small Chains';
-    smallChainColorPattern.value = '2 Color Alternating';
-    pendantStyle.value = 'None';
-
-    // Clear other selects
-    [chunkyChainColorPattern, oRingColor, oRingSize, glowStarColor].forEach(select => {
-      select.value = '';
-    });
-
-    // Uncheck all checkboxes
-    [spikeColorsChecklist, smallChainColorsChecklist, chunkyChainColorsChecklist]
-      .forEach(container => {
-        container.querySelectorAll('input[type=checkbox]')
-          .forEach(cb => cb.checked = false);
-      });
-
-    // Reset color order
-    populateChecklist(spikeColorsChecklist, spikeColors);
-    populateChecklist(smallChainColorsChecklist, chainColorsSmall);
-    populateChecklist(chunkyChainColorsChecklist, chainColorsChunky);
-
-    // Update UI
-    updateSpikeColorsVisibility();
-    updateSmallChainControls();
-    updateChunkyChainControls();
-    updatePendantControls();
-    updatePreviewAndValidation();
-  });
 })();
 </script>
 <div id="mobilePopup" class="mobile-popup">
