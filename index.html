@@ -165,7 +165,8 @@ html {
   html, body {
     height: 100%;
     margin: 0;
-    overflow: hidden;
+    padding: 0;
+    overflow-y: auto !important; /* Change from hidden to auto */
   }
 
   body {
@@ -179,6 +180,10 @@ html {
     transition: background-color 0.3s, color 0.3s;
     min-height: 100vh;
     gap: 0; /* Remove gap between major sections */
+    overflow-x: hidden;
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
   }
 
   body.light {
@@ -192,6 +197,12 @@ html {
     width: 100%;
     gap: 0; /* Ensure no gap between containers */
     padding: 0;
+    flex: 1;
+    min-height: 0; /* Allow container to shrink */
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
   }
 
   #modeToggle {
@@ -215,7 +226,7 @@ html {
   .container {
     max-width: 800px;
     width: 100%;
-    max-height: calc(100vh - 80px); /* Reduce spacing from 130px */
+    max-height: none; /* Remove max-height restriction */
     overflow-y: auto;
     background-color: var(--container-bg-dark);
     border-radius: 12px;
@@ -227,6 +238,11 @@ html {
     align-items: center;
     transition: background-color 0.3s, border-color 0.3s;
     margin: 0;
+    flex: 1;
+    min-height: 0; /* Allow container to shrink */
+    height: auto;
+    min-height: 0;
+    max-height: none;
   }
   
   #modeToggle:focus-visible {
@@ -244,15 +260,19 @@ html {
     width: 100%;
     max-width: 400px;
     margin-bottom: 0; /* Remove bottom spacing */
+    height: auto;
+    min-height: 0;
+    overflow-y: visible;
   }
 
   .preview-container {
     max-width: 800px;
     width: 100%;
-    max-height: 30vh; /* Reduce from 40vh to tighten gap */
+    min-height: 180px; /* Reduce minimum height */
+    height: clamp(180px, 35vh, 400px); /* Use clamp for better scaling */
     background-color: var(--container-bg-dark);
     border-radius: 12px;
-    padding: 0.5rem 2rem 1rem 2rem; /* Reduce padding */
+    padding: clamp(0.5rem, 2vw, 2rem);
     border: 2px solid var(--container-border-dark);
     box-sizing: border-box;
     user-select: none;
@@ -260,10 +280,14 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow: visible; /* Change from hidden to visible */
-    margin-top: 0; /* Remove top gap */
-    margin-bottom: 0; /* Remove bottom gap */
+    overflow: visible;
+    margin: 0.5rem auto;
     position: relative;
+    flex-shrink: 0; /* Prevent preview from shrinking */
+    position: relative;
+    height: min(35vh, 400px);
+    min-height: 150px;
+    margin: 0.5rem 0;
   }
 
   body.light .preview-container {
@@ -281,6 +305,16 @@ html {
     width: 100%;
     margin: 0; /* Remove all margins */
     padding: 0.5rem; /* Add small padding */
+    position: relative;
+    max-width: 800px;
+    width: 100%;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    flex-shrink: 0; /* Prevent container from shrinking */
+    z-index: 1; /* Ensure controls stay above other elements */
+    height: auto;
+    min-height: 0;
+    margin: 0.5rem 0;
   }
 
   label {
@@ -434,14 +468,11 @@ html {
   #leatherContainer {
     position: relative;
     width: 100%;
-    max-width: 700px;
-    height: 50px;
-    margin-bottom: 1.75rem;
-    padding-left: 10%;
-    padding-right: 10%;
+    max-width: min(700px, 90vw);
+    height: clamp(30px, 5vh, 50px);
+    margin: 0 auto 1.75rem;
+    padding: 0 10%;
     box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -518,8 +549,8 @@ html {
   }
 
   .spike {
-    width: 7px;
-    height: 7px;
+    width: clamp(5px, 1vw, 7px);
+    height: clamp(5px, 1vw, 7px);
     border-radius: 0;
     outline: 2px solid rgba(48, 48, 48, 0.8);
     box-sizing: border-box;
@@ -531,25 +562,25 @@ html {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 1.25rem;
-    max-width: 700px;
+    gap: clamp(0.5rem, 2vw, 1.25rem);
+    max-width: min(700px, 90vw);
     margin: 0 auto;
     overflow: visible;
   }
 
   #chainLeft, #chainRight {
     display: flex;
-    gap: 0.3rem;
+    gap: clamp(0.2rem, 0.5vw, 0.3rem);
     position: relative;
-    min-width: 100px;
-    min-height: 60px;
+    min-width: clamp(80px, 15vw, 100px);
+    min-height: clamp(40px, 8vh, 60px);
     flex-shrink: 0;
     align-items: center;
   }
 
   #pendantGap {
     display: flex;
-    min-width: 70px;
+    min-width: clamp(50px, 10vw, 70px);
     justify-content: center;
     align-items: center;
     user-select: none;
@@ -566,14 +597,14 @@ html {
   .pendant-ring {
     box-sizing: border-box;
     border-style: solid;
-    border-width: 0.4rem;
+    border-width: clamp(0.2rem, 0.4vw, 0.4rem);
     border-radius: 100%;
     margin: auto;
   }
 
   .pendant-star {
-    margin-top: 40px;
-    font-size: 5.25rem;
+    margin-top: clamp(20px, 4vh, 40px);
+    font-size: clamp(3rem, 6vw, 5.25rem);
     user-select: none;
     font-weight: 900;
     color: #fff;
@@ -588,7 +619,7 @@ html {
 
   .chain-link {
     border-radius: 50%;
-    border: 3px solid rgba(110, 110, 110, 0.15);
+    border: min(2px, 0.3vw) solid rgba(110, 110, 110, 0.15);
     box-sizing: border-box;
     cursor: default;
     transition: background-color 0.3s;
@@ -596,13 +627,13 @@ html {
   }
 
   .chain-link.small {
-    width: 6px;
-    height: 6px;
+    width: clamp(4px, 0.8vw, 6px);
+    height: clamp(4px, 0.8vw, 6px);
   }
 
   .chain-link.chunky {
-    width: 18px;
-    height: 18px;
+    width: clamp(12px, 2vw, 18px);
+    height: clamp(12px, 2vw, 18px);
   }
 
   select:invalid {
@@ -979,6 +1010,34 @@ html {
     align-items: center;
     gap: 1rem;
     margin-top: 0.5rem;
+  }
+
+  /* Ensure proper spacing at bottom of page */
+  @media (max-height: 768px) {
+    body {
+      padding-bottom: 1rem;
+    }
+    
+    .preview-container {
+      min-height: 150px; /* Even smaller on very small screens */
+      height: clamp(150px, 30vh, 300px);
+    }
+  }
+
+  /* Update media query for very small screens */
+  @media (max-height: 600px) {
+    .preview-container {
+      min-height: 120px;
+      height: clamp(120px, 25vh, 250px);
+    }
+    
+    body {
+      gap: 0.5rem;
+    }
+
+    .container-wrapper {
+      gap: 0.5rem;
+    }
   }
 </style>
 </head>
@@ -1819,10 +1878,12 @@ html {
           return checkedColors[nextIndex] || checkedColors[0];
         }
         case 'Full Color Reverse': {
-          // For full reverse, use color that maintains symmetry
+          // For full reverse, allow 6th color in middle if available
           const n = checkedColors.length;
-          if (n >= 2) {
-            return checkedColors[Math.floor(n / 2)];
+          if (n >= 6) {
+            return checkedColors[5]; // Use 6th color for middle
+          } else if (n >= 2) {
+            return checkedColors[Math.floor(n / 2)]; // Original behavior
           }
           return checkedColors[0];
         }
@@ -2228,10 +2289,104 @@ html {
   function makeChecklistDraggable(container) {
   let draggedElement = null;
   let draggedPos = null;
+  let touchTimeout = null;
+  let initialTouchY = null;
+  let scrolling = false;
 
   container.querySelectorAll('label').forEach(label => {
     label.draggable = true;
 
+    // Add touch event handlers
+    label.addEventListener('touchstart', (e) => {
+      initialTouchY = e.touches[0].clientY;
+      touchTimeout = setTimeout(() => {
+        if (!scrolling) {
+          draggedElement = label;
+          draggedPos = [...container.children].indexOf(label);
+          label.classList.add('dragging');
+          
+          // Create visual feedback
+          label.style.opacity = '0.5';
+        }
+      }, 300); // Long press threshold
+    }, { passive: false });
+
+    label.addEventListener('touchmove', (e) => {
+      if (!draggedElement) {
+        // Check if user is scrolling
+        const touchY = e.touches[0].clientY;
+        if (Math.abs(touchY - initialTouchY) > 10) {
+          scrolling = true;
+          clearTimeout(touchTimeout);
+        }
+        return;
+      }
+
+      e.preventDefault();
+      const touch = e.touches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      
+      // Find the closest label element
+      const dropTarget = target?.closest('label');
+      
+      // Clear previous drag-over states
+      container.querySelectorAll('.drag-over').forEach(el => {
+        el.classList.remove('drag-over');
+      });
+
+      if (dropTarget && dropTarget !== draggedElement) {
+        dropTarget.classList.add('drag-over');
+      }
+    });
+
+    label.addEventListener('touchend', (e) => {
+      clearTimeout(touchTimeout);
+      if (!draggedElement) return;
+
+      const touch = e.changedTouches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      const dropTarget = target?.closest('label');
+
+      if (dropTarget && dropTarget !== draggedElement) {
+        const dropPos = [...container.children].indexOf(dropTarget);
+        
+        if (draggedPos < dropPos) {
+          dropTarget.parentNode.insertBefore(draggedElement, dropTarget.nextSibling);
+        } else {
+          dropTarget.parentNode.insertBefore(draggedElement, dropTarget);
+        }
+        
+        requestAnimationFrame(() => {
+          updatePreviewAndValidation();
+        });
+      }
+
+      // Reset states
+      draggedElement.style.opacity = '';
+      draggedElement.classList.remove('dragging');
+      container.querySelectorAll('.drag-over').forEach(el => {
+        el.classList.remove('drag-over');
+      });
+      draggedElement = null;
+      draggedPos = null;
+      scrolling = false;
+    });
+
+    label.addEventListener('touchcancel', () => {
+      clearTimeout(touchTimeout);
+      if (draggedElement) {
+        draggedElement.style.opacity = '';
+        draggedElement.classList.remove('dragging');
+        container.querySelectorAll('.drag-over').forEach(el => {
+          el.classList.remove('drag-over');
+        });
+        draggedElement = null;
+        draggedPos = null;
+      }
+      scrolling = false;
+    });
+
+    // Keep existing mouse event handlers
     label.addEventListener('dragstart', (e) => {
       draggedElement = label;
       // Store initial position
