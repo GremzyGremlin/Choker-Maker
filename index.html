@@ -465,7 +465,6 @@ html {
     max-width: min(700px, 90vw);
     height: clamp(30px, 5vh, 50px);
     margin: 0 auto 1.75rem;
-    padding: 0 15%; /* Increased padding to contain spikes better */
     box-sizing: border-box;
     flex-shrink: 0;
     display: flex;
@@ -1090,6 +1089,21 @@ html {
     font-size: 0.8rem;
     margin-top: 0.5rem;
     font-style: italic;
+  }
+
+  .checkbox-group label.touch-dragging {
+    background: var(--sakura-pink);
+    color: #333;
+    opacity: 0.9;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 1000;
+  }
+
+  .checkbox-group label.drag-target {
+    border: 2px dashed var(--sakura-pink);
+    background: rgba(255, 142, 185, 0.1);
   }
 </style>
 </head>
@@ -2375,56 +2389,71 @@ html {
   let draggedPos = null;
   let touchTimeout = null;
   let initialTouchY = null;
+  let initialTouchX = null;
   let scrolling = false;
+  let touchStartTime = 0;
 
   container.querySelectorAll('label').forEach(label => {
     label.draggable = true;
 
-    // Add touch event handlers
     label.addEventListener('touchstart', (e) => {
+      touchStartTime = Date.now();
       initialTouchY = e.touches[0].clientY;
+      initialTouchX = e.touches[0].clientX;
+      
       touchTimeout = setTimeout(() => {
         if (!scrolling) {
-          e.preventDefault(); // Prevent scrolling once dragging starts
+          e.preventDefault();
           draggedElement = label;
           draggedPos = [...container.children].indexOf(label);
-          label.classList.add('dragging');
-          document.body.style.overflow = 'hidden'; // Prevent body scroll
-          label.style.opacity = '0.5';
+          label.classList.add('touch-dragging');
+          container.style.overflow = 'hidden';
+          document.body.style.overflow = 'hidden';
+          
+          // Clear any existing drag targets
+          container.querySelectorAll('.drag-target').forEach(el => 
+            el.classList.remove('drag-target'));
         }
-      }, 300); // Long press threshold
-    }, { passive: false }); // Must be non-passive to prevent scroll
+      }, 200); // Reduced long press threshold
+    }, { passive: true });
 
     label.addEventListener('touchmove', (e) => {
       if (!draggedElement) {
         const touchY = e.touches[0].clientY;
-        if (Math.abs(touchY - initialTouchY) > 10) {
+        const touchX = e.touches[0].clientX;
+        const deltaY = Math.abs(touchY - initialTouchY);
+        const deltaX = Math.abs(touchX - initialTouchX);
+        
+        // If significant vertical movement before drag starts
+        if (deltaY > 10 && deltaY > deltaX * 2) {
           scrolling = true;
           clearTimeout(touchTimeout);
         }
         return;
       }
       
-      e.preventDefault(); // Prevent scrolling during drag
+      e.preventDefault();
       const touch = e.touches[0];
       const target = document.elementFromPoint(touch.clientX, touch.clientY);
-      
-      // Find the closest label element
       const dropTarget = target?.closest('label');
       
-      // Clear previous drag-over states
-      container.querySelectorAll('.drag-over').forEach(el => {
-        el.classList.remove('drag-over');
-      });
+      // Clear previous targets
+      container.querySelectorAll('.drag-target').forEach(el => 
+        el.classList.remove('drag-target'));
 
       if (dropTarget && dropTarget !== draggedElement) {
-        dropTarget.classList.add('drag-over');
+        dropTarget.classList.add('drag-target');
       }
-    }, { passive: false }); // Must be non-passive to prevent scroll
+    }, { passive: false });
 
     label.addEventListener('touchend', (e) => {
       clearTimeout(touchTimeout);
-      document.body.style.overflow = ''; // Restore body scroll
+      const touchDuration = Date.now() - touchStartTime;
+      
+      // Restore scrolling
+      container.style.overflow = '';
+      document.body.style.overflow = '';
+      
       if (!draggedElement) return;
 
       const touch = e.changedTouches[0];
@@ -2446,11 +2475,9 @@ html {
       }
 
       // Reset states
-      draggedElement.style.opacity = '';
-      draggedElement.classList.remove('dragging');
-      container.querySelectorAll('.drag-over').forEach(el => {
-        el.classList.remove('drag-over');
-      });
+      draggedElement.classList.remove('touch-dragging');
+      container.querySelectorAll('.drag-target').forEach(el => 
+        el.classList.remove('drag-target'));
       draggedElement = null;
       draggedPos = null;
       scrolling = false;
@@ -2458,20 +2485,20 @@ html {
 
     label.addEventListener('touchcancel', () => {
       clearTimeout(touchTimeout);
-      document.body.style.overflow = ''; // Restore body scroll
+      container.style.overflow = '';
+      document.body.style.overflow = '';
+      
       if (draggedElement) {
-        draggedElement.style.opacity = '';
-        draggedElement.classList.remove('dragging');
-        container.querySelectorAll('.drag-over').forEach(el => {
-          el.classList.remove('drag-over');
-        });
+        draggedElement.classList.remove('touch-dragging');
+        container.querySelectorAll('.drag-target').forEach(el => 
+          el.classList.remove('drag-target'));
         draggedElement = null;
         draggedPos = null;
       }
       scrolling = false;
     });
 
-    // Keep existing mouse event handlers
+    // Keep existing desktop drag event handlers
     label.addEventListener('dragstart', (e) => {
       draggedElement = label;
       // Store initial position
