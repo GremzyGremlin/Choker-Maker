@@ -465,7 +465,7 @@ html {
     max-width: min(700px, 90vw);
     height: clamp(30px, 5vh, 50px);
     margin: 0 auto 1.75rem;
-    padding: 0 10%;
+    padding: 0 15%; /* Increased padding to contain spikes better */
     box-sizing: border-box;
     flex-shrink: 0;
     display: flex;
@@ -533,18 +533,19 @@ html {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 11.5%;
-    right: 11.5%;
+    left: 15%; /* Match container padding */
+    right: 15%; /* Match container padding */
     pointer-events: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 100%;
+    padding: 0 4px; /* Add inner padding to keep spikes away from edges */
   }
 
   .spike {
-    width: clamp(5px, 1vw, 7px);
-    height: clamp(5px, 1vw, 7px);
+    width: clamp(4px, 0.9vw, 6px); /* Slightly smaller width */
+    height: clamp(4px, 0.9vw, 6px); /* Slightly smaller height */
     border-radius: 0;
     outline: 2px solid rgba(48, 48, 48, 0.8);
     box-sizing: border-box;
@@ -557,27 +558,32 @@ html {
     justify-content: center;
     align-items: flex-start;
     gap: clamp(0.5rem, 2vw, 1.25rem);
-    max-width: min(700px, 90vw);
+    max-width: 77%; /* Match leather container's effective width (100% - 23% padding) */
     margin: 0 auto;
     overflow: visible;
+    position: relative;
+    left: 0;
+    right: 0;
   }
 
   #chainLeft, #chainRight {
     display: flex;
     gap: clamp(0.2rem, 0.5vw, 0.3rem);
     position: relative;
-    min-width: clamp(80px, 15vw, 100px);
+    width: calc(50% - clamp(25px, 5vw, 35px)); /* Account for pendant gap */
     min-height: clamp(40px, 8vh, 60px);
     flex-shrink: 0;
     align-items: center;
+    justify-content: center;
   }
 
   #pendantGap {
     display: flex;
-    min-width: clamp(50px, 10vw, 70px);
+    width: clamp(50px, 10vw, 70px);
     justify-content: center;
     align-items: center;
     user-select: none;
+    flex-shrink: 0;
   }
 
   #pendantDisplay {
@@ -1076,6 +1082,15 @@ html {
   .info-text:active {
     color: var(--sakura-pink-dark);
   }
+
+  .rotation-message {
+    display: none;
+    text-align: center;
+    color: var(--sakura-pink);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
 </style>
 </head>
 <body>
@@ -1242,6 +1257,10 @@ html {
     </div>
   </div>
 </section>
+
+<div class="rotation-message" id="rotationMessage">
+  Please rotate your phone for more accurate preview
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
@@ -1982,7 +2001,6 @@ html {
       let color = '#cccccc';
       if(oRingColor.value === 'Light') color = getColor('pendant', 'Light', '#cccccc');
       if(oRingColor.value === 'Dark') color = getColor('pendant', 'Dark', '#444444');
-      ring.style.borderColor = color;
       const sizeMap = { 
         '0.75in': 40,
         '1.00in': 50, 
@@ -2297,6 +2315,21 @@ html {
         orderInfoPopup.style.display = 'none';
       }
     });
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      const rotationMessage = document.getElementById('rotationMessage');
+      
+      function checkOrientation() {
+        if (window.innerHeight > window.innerWidth) { // Portrait
+          rotationMessage.style.display = 'block';
+        } else {
+          rotationMessage.style.display = 'none';
+        }
+      }
+      
+      window.addEventListener('resize', checkOrientation);
+      checkOrientation(); // Initial check
+    }
   });
 
   // Move dismissMobilePopup inside IIFE and make it global
