@@ -1095,6 +1095,11 @@ html {
     font-style: italic;
   }
 
+  body.light .rotation-message {
+    color: var(--sakura-pink-dark);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+
   .checkbox-group label.touch-dragging {
     background: var(--sakura-pink);
     color: #333;
@@ -2324,11 +2329,7 @@ html {
 
   window.addEventListener('DOMContentLoaded', () => {
     
-    // Check if mobile
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        document.getElementById('mobilePopup').style.display = 'block';
-    }
-    
+    // Remove mobile check code
     populateChecklist(spikeColorsChecklist, spikeColors);
     populateChecklist(smallChainColorsChecklist, chainColorsSmall);
     populateChecklist(chunkyChainColorsChecklist, chainColorsChunky);
@@ -2373,14 +2374,6 @@ html {
       checkOrientation(); // Initial check
     }
   });
-
-  // Move dismissMobilePopup inside IIFE and make it global
-  window.dismissMobilePopup = function() {
-    const popup = document.getElementById('mobilePopup');
-    if (popup) {
-      popup.style.display = 'none';
-    }
-  };
 
   // Add tooltip handling functions after other variable declarations
   let tooltip = null;
@@ -2645,10 +2638,6 @@ html {
 
 })();
 </script>
-<div id="mobilePopup" class="mobile-popup">
-    <p>For best experience, please enable desktop site. Thank you.</p>
-    <button onclick="window.dismissMobilePopup()">OK</button>
-</div>
 <div class="info-popup" id="orderInfoPopup">
   <p>This dropdown is connected to the choker order form. Find your order based on when you placed it to see a live preview of your design before it gets made.</p>
   <button onclick="document.getElementById('orderInfoPopup').style.display='none'">OK</button>
