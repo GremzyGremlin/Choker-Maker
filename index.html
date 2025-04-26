@@ -395,12 +395,16 @@ html {
     justify-items: start;
     font-family: monospace;
     font-size: 0.8rem;
-    overflow-y: visible;
-    max-height: none;
     width: 100%;
     margin-right: 0;
     padding-right: 0;
     box-sizing: border-box;
+  }
+
+  /* Remove the overflow-y: auto rule from this selector */
+  .checkbox-group {
+    overflow: visible;
+    max-height: none;
   }
 
   .checkbox-group label {
