@@ -9,25 +9,24 @@
     /* Default to dark theme */
     color-scheme: dark;
     
-    /* Updated dark theme colors */
+    /* Theme colors */
     --container-bg-dark: #1c1c1c;
     --container-border-dark: #2d2d2d;
     --select-focus-bg: #2d2d2d;
     --bg-check: #2d2d2d;
     --bg-check-hover: #363636;
     
-    /* Updated colors based on your detailed specification and spreadsheet */
     /* Base Colors (Leather) */
     --black: #111111;
     --bw-stitch-black: #0e0e0e;
-    --white-leather: #f3f3f2; /* off-white for light mode, slightly gray */
+    --white-leather: #f3f3f2;
     --blue-leather: #236cd1;
     --sky-blue-leather: #a5d5f6;
     --red-leather: #d92126;
     --pink-leather: #f1777f;
     --purple-leather: #804baf;
 
-    /* Spikes (in rainbow order) */
+    /* Spikes */
     --red-spikes: #dc1c12;
     --orange-spikes: #db7c2e;
     --yellow-spikes: #f3e763;
@@ -42,7 +41,7 @@
     --white-spikes: #f3f3f3;
     --gunmetal-spikes: #464a42;
     --black-spikes: #000000;
-    
+
     /* Glow in the Dark Star */
     --blue-glow-in-the-dark-star: #64C4D6;
     --green-glow-in-the-dark-star: #A1BF6C;
@@ -51,7 +50,6 @@
     --pink-glow-in-the-dark-star: #C85F6F;
     --purple-glow-in-the-dark-star: #AE6FA0;
     --white-glow-in-the-dark-star: #CDC9B6;
-
 
     /* Small Chains with full colors */
     --orange: #E28F74;
@@ -83,17 +81,13 @@
     --teal-chunky: hsl(155, 53%, 63%);
     --white-chunky: #E1DDCC;
 
-
-
     /* Pendant Colors */
     --light-pendant: #f3f3f2;
     --dark-pendant: #444444;
 
     /* UI */
     --container-bg-light: #f8efe8bb; /* off-white transparent */
-    --container-bg-dark: #1e1e1edd;
     --container-border-light: #999;
-    --container-border-dark: #444;
 
     /* UI Colors */
     --sakura-pink: #ff8eb9;
@@ -1039,6 +1033,49 @@ html {
       gap: 0.5rem;
     }
   }
+
+  .info-text {
+    font-size: 0.7rem;
+    color: var(--sakura-pink);
+    cursor: pointer;
+    margin-left: 0.5rem;
+    text-decoration: underline;
+    vertical-align: super;
+  }
+
+  .info-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--container-bg-dark);
+    border: 2px solid var(--container-border-dark);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    z-index: 10000;
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+  }
+
+  body.light .info-popup {
+    background: var(--container-bg-light);
+    border-color: var(--container-border-light);
+  }
+
+  .info-popup button {
+    margin-top: 1rem;
+    width: auto;
+    min-width: 80px;
+  }
+
+  /* Update for both desktop and touch */
+  .info-text:hover,
+  .info-text:active {
+    color: var(--sakura-pink-dark);
+  }
 </style>
 </head>
 <body>
@@ -1048,7 +1085,7 @@ html {
     <section class="options-container" aria-label="Choker customization options">
       <h1>Choker Customizer</h1>
 
-      <label for="orderSelector">Select Previous Order by Timestamp</label>
+      <label for="orderSelector">Select Previous Order by Timestamp <span class="info-text" id="orderInfo">What's this?</span></label>
       <select id="orderSelector" aria-label="Select Previous Order" aria-live="polite" aria-atomic="true" aria-controls="preview" aria-describedby="orderHelp" autocomplete="off">
         <option value="">Loading orders…</option>
       </select>
@@ -1080,7 +1117,7 @@ html {
         <option>Other</option>
       </select>
 
-      <label id="labelSpikeColors" for="spikeColorsChecklist" style="display:none; margin-top:1rem;">Spike Colors</label>
+      <label id="labelSpikeColors" for="spikeColorsChecklist" style="display:none; margin-top:1rem;">Spike Colors - Drag and Drop to reorder</label>
       <div id="spikeColorsChecklist" class="checkbox-group" aria-labelledby="labelSpikeColors" style="display:none;"></div>
 
       <label for="chainStyle" style="margin-top:1rem;">Chain Style *</label>
@@ -1102,7 +1139,7 @@ html {
         <option>5 Color Alternating</option>
         <option>Other</option>
       </select>
-      <label id="labelSmallChainColors" for="smallChainColorsChecklist" style="margin-top:0.5rem;display:none;">Small Chain Colors</label>
+      <label id="labelSmallChainColors" for="smallChainColorsChecklist" style="margin-top:0.5rem;display:none;">Small Chain Colors - Drag and Drop to reorder</label>
       <div id="smallChainColorsChecklist" class="checkbox-group" aria-labelledby="labelSmallChainColors" style="display:none;"></div>
 
       <label for="chunkyChainColorPattern" style="margin-top:1rem;display:none;" id="labelChunkyChainColorPattern">Chunky Chain Color Pattern</label>
@@ -1115,7 +1152,7 @@ html {
         <option>4 Color Reverse</option>
         <option>Other</option>
       </select>
-      <label id="labelChunkyChainColors" for="chunkyChainColorsChecklist" style="margin-top:0.5rem;display:none;">Chunky Chain Colors</label>
+      <label id="labelChunkyChainColors" for="chunkyChainColorsChecklist" style="margin-top:0.5rem;display:none;">Chunky Chain Colors - Drag and Drop to reorder</label>
       <div id="chunkyChainColorsChecklist" class="checkbox-group" aria-labelledby="labelChunkyChainColors" style="display:none;"></div>
 
       <label for="pendantStyle" style="margin-top:1rem;">Pendant Style</label>
@@ -2246,6 +2283,20 @@ html {
     exportFormatBtn.dataset.format = "png";
     exportBtn.textContent = "Export as PNG";
     loadSavedDesigns();
+
+    const orderInfo = document.getElementById('orderInfo');
+    const orderInfoPopup = document.getElementById('orderInfoPopup');
+
+    orderInfo.addEventListener('click', (e) => {
+      e.preventDefault();
+      orderInfoPopup.style.display = 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (e.target !== orderInfo && !orderInfoPopup.contains(e.target)) {
+        orderInfoPopup.style.display = 'none';
+      }
+    });
   });
 
   // Move dismissMobilePopup inside IIFE and make it global
@@ -2301,19 +2352,18 @@ html {
       initialTouchY = e.touches[0].clientY;
       touchTimeout = setTimeout(() => {
         if (!scrolling) {
+          e.preventDefault(); // Prevent scrolling once dragging starts
           draggedElement = label;
           draggedPos = [...container.children].indexOf(label);
           label.classList.add('dragging');
-          
-          // Create visual feedback
+          document.body.style.overflow = 'hidden'; // Prevent body scroll
           label.style.opacity = '0.5';
         }
       }, 300); // Long press threshold
-    }, { passive: false });
+    }, { passive: false }); // Must be non-passive to prevent scroll
 
     label.addEventListener('touchmove', (e) => {
       if (!draggedElement) {
-        // Check if user is scrolling
         const touchY = e.touches[0].clientY;
         if (Math.abs(touchY - initialTouchY) > 10) {
           scrolling = true;
@@ -2321,8 +2371,8 @@ html {
         }
         return;
       }
-
-      e.preventDefault();
+      
+      e.preventDefault(); // Prevent scrolling during drag
       const touch = e.touches[0];
       const target = document.elementFromPoint(touch.clientX, touch.clientY);
       
@@ -2337,10 +2387,11 @@ html {
       if (dropTarget && dropTarget !== draggedElement) {
         dropTarget.classList.add('drag-over');
       }
-    });
+    }, { passive: false }); // Must be non-passive to prevent scroll
 
     label.addEventListener('touchend', (e) => {
       clearTimeout(touchTimeout);
+      document.body.style.overflow = ''; // Restore body scroll
       if (!draggedElement) return;
 
       const touch = e.changedTouches[0];
@@ -2374,6 +2425,7 @@ html {
 
     label.addEventListener('touchcancel', () => {
       clearTimeout(touchTimeout);
+      document.body.style.overflow = ''; // Restore body scroll
       if (draggedElement) {
         draggedElement.style.opacity = '';
         draggedElement.classList.remove('dragging');
@@ -2508,6 +2560,10 @@ html {
 <div id="mobilePopup" class="mobile-popup">
     <p>For best experience, please enable desktop site. Thank you.</p>
     <button onclick="window.dismissMobilePopup()">OK</button>
+</div>
+<div class="info-popup" id="orderInfoPopup">
+  <p>This dropdown is connected to the choker order form. Find your order based on when you placed it to see a live preview of your design before it gets made.</p>
+  <button onclick="document.getElementById('orderInfoPopup').style.display='none'">OK</button>
 </div>
 </body>
 </html>
