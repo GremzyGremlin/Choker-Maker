@@ -920,32 +920,68 @@ html {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-y: auto;
+    width: 100vw;
+    overflow-x: hidden;
   }
 
   body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
-    max-height: 100%;
+    min-height: 100%;
+    max-height: none;
     gap: 0;
     padding: 1rem;
     box-sizing: border-box;
+    width: 100%;
+    position: relative;
   }
 
-  /* Update container styles */
-  .container {
-    max-height: 60%;
-    overflow-y: auto;
-  }
-
-  .preview-container {
-    max-height: 35vh;
+  /* Ensure proper scrolling on mobile */
+  .container-wrapper {
+    width: 100%;
+    max-width: 800px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    position: relative;
     overflow: visible;
-    margin-top: 0.5rem;
   }
 
+  .container {
+    max-height: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Adjust preview container for mobile */
+  .preview-container {
+    max-height: none;
+    height: auto;
+    min-height: 180px;
+    padding-bottom: 3rem;
+    margin: 0.5rem 0;
+    position: relative;
+  }
+
+  /* Add responsive padding for small screens */
+  @media (max-width: 768px) {
+    body {
+      padding: 0.5rem;
+    }
+    
+    .container {
+      padding: 0.75rem 1rem;
+    }
+    
+    .preview-container {
+      padding: 0.75rem;
+      padding-bottom: 2.5rem;
+    }
+  }
 
   /* Add container spacing */
   .container-wrapper {
@@ -1137,6 +1173,21 @@ html {
   }
 }
 
+.label-with-reset {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.reset-btn.small-reset {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+}
+
 </style>
 </head>
 <body>
@@ -1178,7 +1229,12 @@ html {
         <option>Other</option>
       </select>
 
-      <label id="labelSpikeColors" for="spikeColorsChecklist" style="display:none; margin-top:1rem;">Spike Colors - Drag and Drop to reorder</label>
+      <label id="labelSpikeColors" for="spikeColorsChecklist" style="display:none; margin-top:1rem;">
+        <div class="label-with-reset">
+          <span>Spike Colors - Drag and Drop to reorder</span>
+          <button class="reset-btn small-reset" id="resetSpikesBtn" aria-label="Reset spike colors order" data-tooltip="Reset spike colors">🎨</button>
+        </div>
+      </label>
       <div id="spikeColorsChecklist" class="checkbox-group" aria-labelledby="labelSpikeColors" style="display:none;"></div>
 
       <label for="chainStyle" style="margin-top:1rem;">Chain Style *</label>
@@ -1200,7 +1256,12 @@ html {
         <option>5 Color Alternating</option>
         <option>Other</option>
       </select>
-      <label id="labelSmallChainColors" for="smallChainColorsChecklist" style="margin-top:0.5rem;display:none;">Small Chain Colors - Drag and Drop to reorder</label>
+      <label id="labelSmallChainColors" for="smallChainColorsChecklist" style="margin-top:0.5rem;display:none;">
+        <div class="label-with-reset">
+          <span>Small Chain Colors - Drag and Drop to reorder</span>
+          <button class="reset-btn small-reset" id="resetSmallChainsBtn" aria-label="Reset small chain colors order" data-tooltip="Reset small chain colors">🎨</button>
+        </div>
+      </label>
       <div id="smallChainColorsChecklist" class="checkbox-group" aria-labelledby="labelSmallChainColors" style="display:none;"></div>
 
       <label for="chunkyChainColorPattern" style="margin-top:1rem;display:none;" id="labelChunkyChainColorPattern">Chunky Chain Color Pattern</label>
@@ -1213,7 +1274,12 @@ html {
         <option>4 Color Reverse</option>
         <option>Other</option>
       </select>
-      <label id="labelChunkyChainColors" for="chunkyChainColorsChecklist" style="margin-top:0.5rem;display:none;">Chunky Chain Colors - Drag and Drop to reorder</label>
+      <label id="labelChunkyChainColors" for="chunkyChainColorsChecklist" style="margin-top:0.5rem;display:none;">
+        <div class="label-with-reset">
+          <span>Chunky Chain Colors - Drag and Drop to reorder</span>
+          <button class="reset-btn small-reset" id="resetChunkyChainsBtn" aria-label="Reset chunky chain colors order" data-tooltip="Reset chunky chain colors">🎨</button>
+        </div>
+      </label>
       <div id="chunkyChainColorsChecklist" class="checkbox-group" aria-labelledby="labelChunkyChainColors" style="display:none;"></div>
 
       <label for="pendantStyle" style="margin-top:1rem;">Pendant Style</label>
@@ -2634,6 +2700,36 @@ html {
     });
 
     updatePreviewAndValidation();
+  });
+
+  // Add individual reset handlers
+  const resetSpikesBtn = $('resetSpikesBtn');
+  const resetSmallChainsBtn = $('resetSmallChainsBtn');
+  const resetChunkyChainsBtn = $('resetChunkyChainsBtn');
+
+  function resetChecklistColors(container, colors, checkedValues) {
+    container.innerHTML = '';
+    populateChecklist(container, colors);
+    checkedValues.forEach(color => {
+      const cb = container.querySelector(`input[value="${color}"]`);
+      if (cb) cb.checked = true;
+    });
+    updatePreviewAndValidation();
+  }
+
+  resetSpikesBtn.addEventListener('click', () => {
+    const checkedSpikes = [...spikeColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value);
+    resetChecklistColors(spikeColorsChecklist, spikeColors, checkedSpikes);
+  });
+
+  resetSmallChainsBtn.addEventListener('click', () => {
+    const checkedSmall = [...smallChainColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value);
+    resetChecklistColors(smallChainColorsChecklist, chainColorsSmall, checkedSmall);
+  });
+
+  resetChunkyChainsBtn.addEventListener('click', () => {
+    const checkedChunky = [...chunkyChainColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value);
+    resetChecklistColors(chunkyChainColorsChecklist, chainColorsChunky, checkedChunky);
   });
 
 })();
