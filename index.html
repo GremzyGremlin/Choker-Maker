@@ -1004,82 +1004,47 @@ html {
     max-height: 100%;
   }
 
-  /* Update root container styles */
+/* Update spacing between major containers */
+.container {
+  margin-top: 0.5rem;
+}
+
+.preview-container {
+  margin: 0.5rem 0;
+}
+
+.saved-designs-container {
+  margin: 0.5rem 0;
+}
+
+/* Reduce padding inside containers */
+.container {
+  padding: 0.5rem 1.5rem;
+}
+
+.preview-container {
+  padding: 0.75rem 1.5rem 2rem 1.5rem;
+}
+
+/* Reduce body padding */
+body {
+  padding: 0.5rem;
+}
+
+/* Update mobile responsive padding */
+@media (max-width: 768px) {
   .container {
-    max-width: 800px;
-    width: 100%;
-    max-height: 55vh;
-    overflow-y: auto;
-    background-color: var(--container-bg-dark);
-    border-radius: 12px;
-    padding: 1rem 1.5rem 1.5rem 2.5rem;
-    box-sizing: border-box;
-    border: 2px solid var(--container-border-dark);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: background-color 0.3s, border-color 0.3s;
-    margin-top: 1.75rem;
-    position: relative;
+    padding: 0.5rem 1rem;
   }
-
-  /* Update preview container */
+  
   .preview-container {
-    max-height: 40vh;
-    padding: 1rem 2rem 2.75rem 2rem;
-    margin-bottom: 1rem;
+    padding: 0.5rem 1rem 1.5rem 1rem;
   }
-
-  /* Update saved designs container */
-  .saved-designs-container {
-    margin-top: 1rem;
-    width: 100%;
-    max-width: 800px;
-    margin: 1rem auto;
-    text-align: center;
+  
+  body {
+    padding: 0.25rem;
   }
-
-  .saved-designs-actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin: 0.5rem 0;
-  }
-
-  .saved-designs-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  /* Ensure proper spacing at bottom of page */
-  @media (max-height: 768px) {
-    body {
-      padding-bottom: 1rem;
-    }
-    
-    .preview-container {
-      min-height: 150px; /* Even smaller on very small screens */
-      height: clamp(150px, 30vh, 300px);
-    }
-  }
-
-  /* Update media query for very small screens */
-  @media (max-height: 600px) {
-    .preview-container {
-      min-height: 120px;
-      height: clamp(120px, 25vh, 250px);
-    }
-    
-    body {
-      gap: 0.5rem;
-    }
-
-    .container-wrapper {
-      gap: 0.5rem;
-    }
-  }
+}
 
   .info-text {
     font-size: 0.7rem;
