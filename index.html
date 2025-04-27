@@ -399,6 +399,8 @@ html {
     margin-right: 0;
     padding-right: 0;
     box-sizing: border-box;
+    overflow: visible;
+    max-height: none;
   }
 
   /* Remove the overflow-y: auto rule from this selector */
@@ -998,7 +1000,7 @@ html {
 
   /* Ensure checkboxes stay visible */
   .checkbox-group {
-    overflow-y: auto;
+    overflow-y: visible;
     max-height: 100%;
   }
 
@@ -1250,6 +1252,7 @@ html {
         <option value="" disabled selected>-- Select Small Chain Color Pattern --</option>
         <option>Unselected</option>
         <option>Solid Color</option>
+        <option>Double Color</option>
         <option>Half and Half</option>
         <option>2 Color Alternating</option>
         <option>3 Color Alternating</option>
@@ -1269,6 +1272,7 @@ html {
         <option value="" disabled selected>-- Select Chunky Chain Color Pattern --</option>
         <option>Unselected</option>
         <option>Solid Color</option>
+        <option>Double Color</option>
         <option>Half and Half</option>
         <option>2 Color Alternating</option>
         <option>4 Color Reverse</option>
@@ -2179,38 +2183,51 @@ html {
       return { left: new Array(count / 2).fill(col), right: new Array(count / 2).fill(col) };
     }
     const half = count / 2;
-    let leftColors = [];
+    let leftColors = [], rightColors = [];
+    
     switch(pattern) {
+      case "Double Color":
+        if (colorChoices.length >= 2) {
+          leftColors = new Array(half).fill(colorChoices[0]);
+          rightColors = new Array(half).fill(colorChoices[1]);
+        } else {
+          leftColors = rightColors = new Array(half).fill(colorChoices[0]);
+        }
+        break;
       case "Solid Color":
         leftColors = new Array(half).fill(colorChoices[0]);
+        rightColors = [...leftColors];
         break;
-      case "Half and Half": {
+      case "Half and Half":
         const halfHalf = Math.floor(half / 2);
         leftColors = new Array(halfHalf).fill(colorChoices[0]);
         if(half % 2 !== 0) leftColors.push(colorChoices[0]);
         leftColors = leftColors.concat(new Array(halfHalf).fill(colorChoices[1]));
+        rightColors = [...leftColors].reverse();
         break;
-      }
       case "2 Color Alternating":
         leftColors = new Array(half).fill(null).map((_, i) => colorChoices[i % 2]);
+        rightColors = [...leftColors].reverse();
         break;
       case "3 Color Alternating":
         leftColors = new Array(half).fill(null).map((_, i) => colorChoices[i % 3]);
+        rightColors = [...leftColors].reverse();
         break;
       case "4 Color Reverse": {
         const seq = [0,1,2,3,3,2,1,0];
         leftColors = new Array(half).fill(null).map((_, i) => colorChoices[seq[i % 8]] || colorChoices[0]);
+        rightColors = [...leftColors].reverse();
         break;
       }
       case "5 Color Alternating":
         leftColors = new Array(half).fill(null).map((_, i) => colorChoices[i % 5]);
+        rightColors = [...leftColors].reverse();
         break;
       default:
         leftColors = new Array(half).fill(colorChoices[0]);
-        break;
+        rightColors = [...leftColors];
     }
-    // Right colors mirror left colors reversed
-    const rightColors = [...leftColors].reverse();
+    
     return { left: leftColors, right: rightColors };
   }
 
