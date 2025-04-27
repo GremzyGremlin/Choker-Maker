@@ -192,10 +192,10 @@ html {
     gap: 0; /* Ensure no gap between containers */
     padding: 0;
     flex: 1;
-    min-height: 0; /* Allow container to shrink */
+    max-height: 60vh;
     display: flex;
     flex-direction: column;
-    height: auto;
+    height: shrink-fit; /* Allow container to shrink to fit content */
     min-height: 0;
   }
 
