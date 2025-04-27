@@ -1163,6 +1163,7 @@ body {
   <div class="container" role="main" aria-live="polite" aria-atomic="true">
     <section class="options-container" aria-label="Choker customization options">
       <h1>Choker Customizer</h1>
+      <button id="randomizeAll" style="margin-bottom: 1rem;" title="Randomize all options">🎲 Randomize Design</button>
 
       <label for="orderSelector">Select Previous Order by Timestamp <span class="info-text" id="orderInfo">What's this?</span></label>
       <select id="orderSelector" aria-label="Select Previous Order" aria-live="polite" aria-atomic="true" aria-controls="preview" aria-describedby="orderHelp" autocomplete="off">
@@ -2713,6 +2714,121 @@ body {
     const checkedChunky = [...chunkyChainColorsChecklist.querySelectorAll('input:checked')].map(cb => cb.value);
     resetChecklistColors(chunkyChainColorsChecklist, chainColorsChunky, checkedChunky);
   });
+
+// Add randomize functionality
+  const randomizeAll = $('randomizeAll');
+
+  function getRandomElement(arr) {
+    if (!arr || arr.length === 0) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function getRandomElements(arr, count) {
+    if (!arr || arr.length === 0) return [];
+    const shuffled = [...arr].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(count, arr.length));
+  }
+
+  function randomizeSelections() {
+    // Base Color
+    const baseColorOptions = [...baseColor.options].filter(opt => !opt.disabled);
+    baseColor.value = getRandomElement(baseColorOptions).value;
+
+    // Spike Style
+    const spikeStyleOptions = [...spikeStyle.options].filter(opt => !opt.disabled && opt.value !== "Other");
+    spikeStyle.value = getRandomElement(spikeStyleOptions).value;
+
+    // First update visibility of spike colors
+    updateSpikeColorsVisibility();
+
+    // Then handle spike colors if visible
+    if (spikeColorsChecklist.style.display !== 'none') {
+      // Uncheck all
+      spikeColorsChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      // Select random colors based on pattern
+      const colorCount = spikeStyle.value === 'Solid Color' ? 1 :
+                        spikeStyle.value === 'Alternating Color' ? 2 :
+                        spikeStyle.value === '3 Color Reverse' ? 3 :
+                        spikeStyle.value === 'Full Color Reverse' ? Math.floor(Math.random() * 3) + 4 : 1;
+      const randomColors = getRandomElements([...spikeColorsChecklist.querySelectorAll('input[type="checkbox"]')], colorCount);
+      randomColors.forEach(cb => cb.checked = true);
+    }
+
+    // Chain Style
+    const chainStyleOptions = [...chainStyle.options].filter(opt => !opt.disabled);
+    chainStyle.value = getRandomElement(chainStyleOptions).value;
+
+    // Update chain controls visibility first
+    updateSmallChainControls();
+    updateChunkyChainControls();
+
+    // Handle Small Chains
+    if (chainStyle.value === 'Small Chains') {
+      const smallChainPatternOptions = [...smallChainColorPattern.options].filter(opt => !opt.disabled && opt.value !== "Other" && opt.value !== "Unselected");
+      smallChainColorPattern.value = getRandomElement(smallChainPatternOptions).value;
+      
+      // Update visibility again after pattern selection
+      updateSmallChainControls();
+      
+      // Now handle colors if the checklist is visible
+      if (smallChainColorsChecklist.style.display !== 'none') {
+        smallChainColorsChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        const colorCount = smallChainColorPattern.value === 'Solid Color' ? 1 :
+                          smallChainColorPattern.value === 'Double Color' ? 2 :
+                          smallChainColorPattern.value === 'Half and Half' ? 2 :
+                          smallChainColorPattern.value === '2 Color Alternating' ? 2 :
+                          smallChainColorPattern.value === '3 Color Alternating' ? 3 :
+                          smallChainColorPattern.value === '5 Color Alternating' ? 5 : 1;
+        const randomColors = getRandomElements([...smallChainColorsChecklist.querySelectorAll('input[type="checkbox"]')], colorCount);
+        randomColors.forEach(cb => cb.checked = true);
+      }
+    }
+    // Handle Chunky Chains
+    else if (chainStyle.value === 'Chunky Chains') {
+      const chunkyChainPatternOptions = [...chunkyChainColorPattern.options].filter(opt => !opt.disabled && opt.value !== "Other" && opt.value !== "Unselected");
+      chunkyChainColorPattern.value = getRandomElement(chunkyChainPatternOptions).value;
+      
+      // Update visibility again after pattern selection
+      updateChunkyChainControls();
+      
+      // Now handle colors if the checklist is visible
+      if (chunkyChainColorsChecklist.style.display !== 'none') {
+        chunkyChainColorsChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        const colorCount = chunkyChainColorPattern.value === 'Solid Color' ? 1 :
+                          chunkyChainColorPattern.value === 'Double Color' ? 2 :
+                          chunkyChainColorPattern.value === 'Half and Half' ? 2 :
+                          chunkyChainColorPattern.value === '2 Color Alternating' ? 2 :
+                          chunkyChainColorPattern.value === '4 Color Reverse' ? 4 : 1;
+        const randomColors = getRandomElements([...chunkyChainColorsChecklist.querySelectorAll('input[type="checkbox"]')], colorCount);
+        randomColors.forEach(cb => cb.checked = true);
+      }
+    }
+
+    // Pendant Style and related options
+    const pendantStyleOptions = [...pendantStyle.options].filter(opt => !opt.disabled && opt.value !== "Other");
+    pendantStyle.value = getRandomElement(pendantStyleOptions).value;
+
+    // Update pendant controls visibility
+    updatePendantControls();
+
+    // Now handle pendant-specific options
+    if (pendantStyle.value === 'O-Ring') {
+      const oRingColorOptions = [...oRingColor.options].filter(opt => !opt.disabled);
+      const oRingSizeOptions = [...oRingSize.options].filter(opt => !opt.disabled);
+      oRingColor.value = getRandomElement(oRingColorOptions).value;
+      oRingSize.value = getRandomElement(oRingSizeOptions).value;
+    } else if (pendantStyle.value === 'Glow in the Dark Star') {
+      const glowStarColorOptions = [...glowStarColor.options].filter(opt => !opt.disabled);
+      glowStarColor.value = getRandomElement(glowStarColorOptions).value;
+    }
+
+    // Final update of the preview
+    updatePreviewAndValidation();
+  }
+
+  randomizeAll.addEventListener('click', randomizeSelections);
+
+  // Add helper function after colorMap definition
 
 })();
 </script>
